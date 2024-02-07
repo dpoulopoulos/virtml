@@ -12,11 +12,13 @@ Contact
 
 * Dimitris Poulopoulos dimitris.a.poulopoulos@gmail.com
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
 We warmly welcome your feedback and look forward to hearing from you!
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Deployment Guides
+
+   pxe-server
 
 Indices and tables
 ==================
