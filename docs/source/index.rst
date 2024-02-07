@@ -1,16 +1,22 @@
-.. Kubeflow on KVM documentation master file, created by
-   sphinx-quickstart on Wed Feb  7 14:27:19 2024.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Kubeflow on KVM
+===============
 
-Welcome to Kubeflow on KVM's documentation!
-===========================================
+Kubeflow on KVM is a project dedicated to simplifying the process of setting up
+[Kubeflow](https://www.kubeflow.org/) in a virtualized environment, making it easier for data
+scientists to leverage the power of Machine Learning (ML) workflows on Kubernetes.
+
+🚧 🚧 🚧 This is Work-in-Progress. 🚧 🚧 🚧
+
+Contact
+-------
+
+* Dimitris Poulopoulos dimitris.a.poulopoulos@gmail.com
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-
+We warmly welcome your feedback and look forward to hearing from you!
 
 Indices and tables
 ==================
