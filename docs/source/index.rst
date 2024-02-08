@@ -19,6 +19,7 @@ We warmly welcome your feedback and look forward to hearing from you!
    :caption: Deployment Guides
 
    qemu-kvm
+   gpu-passthrough
    pxe-server
 
 .. Indices and tables
