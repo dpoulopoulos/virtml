@@ -1,6 +1,6 @@
-# Configure a Debian PXE server
+# Configure a PXE server
 
-This guide will help you to configure a PXE server to boot the control-plane and worker nodes of a
+This guide will help you configure a PXE server to boot the control-plane and worker nodes of a
 Kubernetes cluster.
 
 🚧 🚧 🚧 This is Work-in-Progress. 🚧 🚧 🚧
@@ -11,7 +11,7 @@ In this section you will create a KVM VM for the PXE server, using a Debian `12.
 
 ### What you'll need
 
-* A machine with KVM installed.
+* A machine with QEMU/KVM installed.
 * A Debian `12.4` ISO. You can download it from the [official Debian website](https://www.debian.org/distrib/netinst).
 
 ### Procedure
@@ -73,6 +73,10 @@ In this section you will create a KVM VM for the PXE server, using a Debian `12.
 1. Connect to the PXE server VM through the "Virtual Machine Manager" UI and run the Debian
    installer. The Debian installer will guide you through the installation process. You can use the
    default settings for most of the options.
+
+    ```console
+    user:~/kubeflow-on-kvm/infra$ virt-manager
+    ```   
 
    > **Note**: We recommend doing a minimal installation of Debian, without any graphical interface.
 
@@ -210,10 +214,13 @@ network and install Debian `12.4` on it.
 
 1. Export environment variables for your network settings. Replace the example values with values
    specific to your network:
+
     * `DHCP_NETWORK`: The network address of the DHCP server.
     * `DHCP_GATEWAY`: The gateway address of the DHCP server.
     * `DHCP_NETMASK`: The netmaWsk of the DHCP server.
     * `DHCP_DNS_SERVER`: The DNS server address of the DHCP server.
+
+    <br/>
 
     ```console
     root@pxe-server:/etc/dnsmasq.d# export DHCP_NETWORK="192.168.1.0"
@@ -233,7 +240,34 @@ network and install Debian `12.4` on it.
 
 1. Configure the `dnsmasq` service to disable DNS, and enable DHCP and TFTP:
 
+    a. Run the following command:
+
     ```console
+    root@pxe-server:/etc/dnsmasq.d# j2r > kubeflow-on-kvm.conf
+    ```
+
+    b. Copy and paste the following text:
+
+    ```
+    # DNS: Disable
+    port=0
+
+    # DHCP: Enable (for specific addresses)
+    dhcp-range={{ DHCP_NETWORK }},static
+    dhcp-option=option:netmask,{{ DHCP_NETMASK }}
+    dhcp-option=option:router,{{ DHCP_GATEWAY }}
+    dhcp-option=option:dns-server,{{ DHCP_DNS_SERVER }}
+    log-dhcp
+
+    # TFTP: Enable
+    enable-tftp
+    tftp-root=/srv/tftp
+    dhcp-boot=/bootnetx64.efi
+    ```
+    
+    c. Run `CTRL + D` to exit.
+
+    <!-- ```console
     root@pxe-server:/etc/dnsmasq.d# j2r > kubeflow-on-kvm.conf <<EOF
     > # DNS: Disable
     > port=0
@@ -250,22 +284,33 @@ network and install Debian `12.4` on it.
     > tftp-root=/srv/tftp
     > dhcp-boot=/bootnetx64.efi
     > EOF
-      ```
-
-    > **Note**: This configuration will only respond to DHCP requests from explicitly configured MAC
-    > addresses.
+    ``` -->
 
 1. Create a template for `dnsmaq` to respond to individual DHCP requests:
 
+    a. Run the following command:
+
     ```console
+    root@pxe-server:/etc/dnsmasq.d# cat > .template.j2
+    ```
+
+    a. Copy and paste the following text:
+
+    ```
+    dhcp-host={{ CLIENT_MAC }},{{ CLIENT_HOSTNAME }},{{ CLIENT_IP }}
+    ```
+    
+    a. Run `CTRL + D` to exit.
+
+    <!-- ```console
     root@pxe-server:/etc/dnsmasq.d# cat > .template.j2 <<EOF
     > dhcp-host={{ CLIENT_MAC }},{{ CLIENT_HOSTNAME }},{{ CLIENT_IP }}
     > EOF
-    ```
+    ``` -->
 
     > **Note**: You will later set the `{{ MAC_ADDRESS }}` with the MAC address of the machine you
-    > want to boot, and `{{ CLIENT_HOSTNAME }}`, `{{ IP_ADDRESS }}` with the hostname and IP address
-    > you want to assign to the machine.
+    > want to boot, and assign the hostname and IP address you want via the corresponding
+    > environment variables (i.e., CLIENT_HOSTNAME, CLIENT_IP).
 
 1. Restart the `dnsmasq` service:
 
