@@ -21,9 +21,9 @@ We warmly welcome your feedback and look forward to hearing from you!
    qemu-kvm
    pxe-server
 
-Indices and tables
-==================
+.. Indices and tables
+.. ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`
