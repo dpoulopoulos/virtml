@@ -3,8 +3,6 @@
 This guide will help you configure a PXE server to boot the control-plane and worker nodes of a
 Kubernetes cluster.
 
-🚧 🚧 🚧 This is Work-in-Progress. 🚧 🚧 🚧
-
 ## Step 1: Create a VM for the PXE server on KVM
 
 In this section you will create a KVM VM for the PXE server, using a Debian `12.4` image.
