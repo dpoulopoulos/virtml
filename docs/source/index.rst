@@ -18,6 +18,7 @@ We warmly welcome your feedback and look forward to hearing from you!
    :maxdepth: 1
    :caption: Deployment Guides
 
+   qemu-kvm
    pxe-server
 
 Indices and tables
