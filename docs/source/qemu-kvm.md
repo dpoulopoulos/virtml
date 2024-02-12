@@ -1,6 +1,10 @@
 # Install QEMU/KVM on Debian/Ubuntu
 
-This guide will show you how to install QEMU/KVM on a Debian-based system.
+This guide will walk you through the installation of QEMU/KVM on a Debian-based system.
+[QEMU](https://www.qemu.org/) is a generic and open source machine emulator and virtualizer, which
+allows for the emulation of various hardware platforms. [KVM (Kernel-based Virtual Machine)](https://linux-kvm.org/page/Main_Page)
+is a virtualization module in the Linux kernel that allows the kernel to function as a hypervisor,
+enabling the running of multiple, isolated virtual environments known as virtual machines (VMs).
 
 ## What you'll need
 
@@ -94,6 +98,14 @@ This guide will show you how to install QEMU/KVM on a Debian-based system.
      Loaded: loaded (/lib/systemd/system/libvirtd.service; enabled; preset: enabled)
      Active: active (running) since Thu 2024-02-08 08:07:20 EET; 7h ago
     ...skipping...
+    ```
+
+1. Check that QEMU is correctly installed by querying its version:
+
+    ```console
+    user:~$ qemu-system-x86_64 --version
+    QEMU emulator version 7.2.7 (Debian 1:7.2+dfsg-7+deb12u3)
+    Copyright (c) 2003-2022 Fabrice Bellard and the QEMU Project developers
     ```
 
 1. Launch the `virt-manager` application:
