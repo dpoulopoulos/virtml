@@ -9,23 +9,39 @@ In this section you will create a KVM VM for the PXE server, using a Debian `12.
 
 ### What you'll need
 
-* A machine with QEMU/KVM installed.
+* A working [QEMU/KVM installation](qemu-kvm).
 * A Debian `12.4` ISO. You can download it from the [official Debian website](https://www.debian.org/distrib/netinst).
 
 ### Procedure
 
+1. Change to root user:
+
+    ```console
+    user:~$ sudo su -
+    root:~#
+    ```
+
+1. Navigate to the project's root directory:
+
+    ```console
+    root:~# cd /home/user/kubeflow-on-kvm
+    ```
+
+    > **Note**: The path `/home/user/kubeflow-on-kmv` is an example. Change it to reflect your working
+    > environment.
+
 1. Create a new `QCOW2` virtual disk for the VM:
 
     ```console
-    user:~/kubeflow-on-kvm$ qemu-img create -f qcow2 ~/.local/libvirt/disks/pxe-server.qcow2 32G
-    Formatting '/home/user/.local/libvirt/disks/pxe-server.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=34359738368 lazy_refcounts=off refcount_bits=16
+    root:~/kubeflow-on-kvm# qemu-img create -f qcow2 /var/lib/libvirt/images/pxe-server.qcow2 32G
+    Formatting '/var/lib/libvirt/images/pxe-server.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=34359738368 lazy_refcounts=off refcount_bits=16
     ```
 
 1. Define a new VM for the PXE server, using the XML file inside the `infra` directory:
 
     ```console
-    user:~/kubeflow-on-kvm$ virsh define --file infra/pxe-server.xml
-    Domain 'pxe-server' defined from infra/pxe-server.xml
+    root:~/kubeflow-on-kvm# virsh define --file infra/pxe-server.xml
+    Domain 'pxe-server' defined from pxe-server.xml
     ```
 
     > **Note**: The `pxe-server.xml` file is a template for the PXE server VM. You can modify it to
@@ -35,45 +51,16 @@ In this section you will create a KVM VM for the PXE server, using a Debian `12.
 1. Start the PXE server VM:
 
     ```console
-    user:~/kubeflow-on-kvm/infra$ virsh start pxe-server
+    root:~/kubeflow-on-kvm# virsh start pxe-server
     Domain 'pxe-server' started
     ```
-
-    <details>
-    <summary>Troubleshoot</summary>
-    
-    If you get the following error during the VM start process:
-        
-    ```console
-    error: Failed to start domain 'pxe-server'
-    error: /usr/lib/qemu/qemu-bridge-helper --use-vnet --br=virbr0 --fd=33: failed to communicate with bridge helper: stderr=failed to parse default acl file `/etc/qemu/bridge.conf'
-    : Transport endpoint is not connected
-    ```
-
-    Make sure you have the following line in your `/etc/qemu/bridge.conf` file:
-
-    ```console
-    allow virbr0
-    ```
-
-    If the file does not exist, create it and add the line above.
-
-    Also, make sure that the `qemu-bridge-helper` binary has the correct permissions:
-
-    ```console
-    user:~/kubeflow-on-kvm/infra$ sudo chmod u+s /usr/local/libexec/qemu-bridge-helper
-    ```
-
-    Then, try to start the VM again. For more information, see the [here](https://wiki.qemu.org/Features/HelperNetworking#Setup).
-        
-    </details>
 
 1. Connect to the PXE server VM through the "Virtual Machine Manager" UI and run the Debian
    installer. The Debian installer will guide you through the installation process. You can use the
    default settings for most of the options.
 
     ```console
-    user:~/kubeflow-on-kvm/infra$ virt-manager
+    root:~/kubeflow-on-kvm# virt-manager
     ```   
 
    > **Note**: We recommend doing a minimal installation of Debian, without any graphical interface.
@@ -83,10 +70,17 @@ In this section you will create a KVM VM for the PXE server, using a Debian `12.
 1. Verify that the PXE server VM is running:
 
     ```console
-    user:~/kubeflow-on-kvm$ virsh list --all
+    root:~/kubeflow-on-kvm# virsh list --all
     Id   Name         State
     -----------------------------
     1    pxe-server   running
+    ```
+
+1. Change back to your user:
+
+    ```console
+    root:~/kubeflow-on-kvm# exit
+    user:~/kubeflow-on-kvm$
     ```
 
 1. Create an SSH key, if you don't already have one:
