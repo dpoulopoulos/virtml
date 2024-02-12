@@ -1,3 +1,4 @@
+j2cli
 sphinx
 myst-parser
 sphinx_rtd_theme

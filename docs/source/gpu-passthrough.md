@@ -1,7 +1,8 @@
 # GPU Passthrough using VFIO
 
-This guide will show you how to pass through a GPU to a Virtual Machine (VM) on KVM. This is useful
-for creating a VM that will become a Kubernetes GPU worker.
+
+This guide will demonstrate the process of passing a GPU through to a Virtual Machine (VM) on KVM,
+an essential step for setting up a VM to function as a Kubernetes GPU worker.
 
 🚧 🚧 🚧 This is Work-in-Progress. 🚧 🚧 🚧
 
@@ -12,51 +13,62 @@ for creating a VM that will become a Kubernetes GPU worker.
 
 ## Step 1: Set your Primary Display for the Host
 
-This step is necessary to change the primary display to the integrated GPU leaving the dedicated GPU
-free to be used by the VM.
+This step is essential for switching the primary display to the integrated GPU, thereby leaving the
+dedicated GPU available for use by the VM.
 
 ### What you'll need
 
-* Access to the BIOS settings of your computer.
+* Access to the BIOS settings of the host machine.
 
 ### Procedure
 
-1. Change to root user:
+<!-- 1. Change to root user:
 
     ```console
     user:~$ sudo su -
     root:~#
+    ``` -->
+
+1. Get the BusID of the integrated GPU by running the following command:
+
+   ```console
+    user:~/kubeflow-on-kvm$ lspci | grep VGA
+    00:02.0 VGA compatible controller: Intel Corporation Raptor Lake-S GT1 [UHD Graphics 770] (rev 04)
+    01:00.0 VGA compatible controller: NVIDIA Corporation GA106 [GeForce RTX 3060 Lite Hash Rate] (rev a1)
     ```
 
-1. Create a configuration file to instruct the X server to use the integrated GPU:
+    In this example, the BusID of the integrated GPU is `PCI:0:2:0`.
 
-    a. Run the following command:
+1. Export the BusID in an environment variable:
 
     ```console
-    root:~# cat > /etc/X11/xorg.conf.d/intel.conf
+    user:~/kubeflow-on-kvm$ export PCI_BUS_ID="PCI:0:2:0"
     ```
 
-    b. Copy and paste the following text:
+1. Create the configuration file for the X server, using the provided template:
 
-    ```
-    Section "Device"
-        Identifier "Intel"
-        Driver "intel"
-        BusID "PCI:0:2:0"
-    EndSection
+    ```console
+    user:~/kubeflow-on-kvm$ j2 infra/intel.conf.j2 > intel.conf
     ```
 
-    Replace `PCI:0:2:0` with the BusID of your integrated GPU. You can find it by running
-   `lspci | grep VGA`.
-    
-    c. Run `CTRL + D` to exit.
+1. Copy the configuration file to the X server configuration directory:
+
+    ```console
+    user:~/kubeflow-on-kvm$ sudo cp intel.conf /etc/X11/xorg.conf.d/20-intel.conf
+    ```
+
+1. Change the ownership and the group of the configuration file to `root`:
+
+    ```console
+    user:~/kubeflow-on-kvm$ sudo chown root:root /etc/X11/xorg.conf.d/20-intel.conf
+    ```
 
 1. Boot to UEFI/BIOS settings, and set the primary display to the integrated GPU. Look under
    "Advanced" settings, for an option like "Primary Display". Set it to "Auto" and connect the
    monitor directly to the motherboard. Alternativelly, set it to "CPU" or "iGPU" if available.
 
     ```console
-    root:~# systemctl reboot --firmware-setup
+    root:~# sudo systemctl reboot --firmware-setup
     ```
 
 ## Step 2: Enable GPU Passthrough
