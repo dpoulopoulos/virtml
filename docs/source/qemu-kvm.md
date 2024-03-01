@@ -2,13 +2,17 @@
 
 This guide will walk you through the installation of QEMU/KVM on a Debian-based system.
 [QEMU](https://www.qemu.org/) is a generic and open source machine emulator and virtualizer, which
-allows for the emulation of various hardware platforms. [KVM (Kernel-based Virtual Machine)](https://linux-kvm.org/page/Main_Page)
-is a virtualization module in the Linux kernel that allows the kernel to function as a hypervisor,
-enabling the running of multiple, isolated virtual environments known as virtual machines (VMs).
+allows for the emulation of various hardware platforms.
+
+[KVM (Kernel-based Virtual Machine)](https://linux-kvm.org/page/Main_Page) is a virtualization
+module in the Linux kernel that allows the kernel to function as a hypervisor, enabling the running
+of multiple, isolated virtual environments known as virtual machines (VMs).
 
 ## What you'll need
 
 * A Debian-based system.
+
+> 🔵 This guide has been tested with Debian 12 (Bookworm).
 
 ## Procedure
 
@@ -37,7 +41,7 @@ enabling the running of multiple, isolated virtual environments known as virtual
     ```
 
     <details>
-    <summary>Troubleshoot</summary>
+    <summary> 🔴 Troubleshoot</summary>
     
     If the `kvm-ok` utility is missing, install the `cpu-checker` package:
 
