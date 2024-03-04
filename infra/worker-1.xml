@@ -1,0 +1,34 @@
+<domain type="kvm">
+  <name>worker-1</name>
+  <vcpu current="8">8</vcpu>
+  <memory>33554432</memory>
+  <os>
+    <type arch="x86_64" machine="q35">hvm</type>
+    <loader readonly="yes" type="pflash">/usr/share/OVMF/OVMF_CODE_4M.fd</loader>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <vmport state="off"/>
+  </features>
+  <cpu mode="host-passthrough">
+    <topology sockets="1" cores="4" threads="2"/>
+  </cpu>
+  <devices>
+    <emulator>/usr/bin/qemu-system-x86_64</emulator>
+    <disk type="file" device="disk">
+      <driver name="qemu" type="qcow2"/>
+      <source file="/var/lib/libvirt/images/worker-1.qcow2"/>
+      <target dev="vda" bus="virtio"/>
+      <boot order="1"/>
+    </disk>
+    <interface type="bridge">
+      <source bridge="virbr0"/>
+      <mac address="52:54:00:fd:b9:8b"/>
+      <model type="virtio"/>
+      <boot order="2"/>
+      <rom bar="off"/>
+    </interface>
+    <graphics type='spice' autoport='yes'/>
+  </devices>
+</domain>

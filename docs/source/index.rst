@@ -21,6 +21,7 @@ We warmly welcome your feedback and look forward to hearing from you!
    qemu-kvm
    gpu-passthrough
    pxe-server
+   debian-preseed
 
 .. Indices and tables
 .. ==================
