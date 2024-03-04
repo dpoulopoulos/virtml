@@ -1,8 +1,7 @@
 # GPU Passthrough using VFIO
 
-
-This guide will demonstrate the process of passing a GPU through to a Virtual Machine (VM) on KVM,
-an essential step for setting up a VM to function as a Kubernetes GPU worker.
+This guide demonstrates the process of passing a GPU through to a Virtual Machine (VM) on KVM, an
+essential step for setting up a VM to function as a Kubernetes GPU worker.
 
 🚧 🚧 🚧 This is Work-in-Progress. 🚧 🚧 🚧
 
@@ -90,9 +89,10 @@ the NVIDIA driver during boot.
     01:00.1 Audio device [0403]: NVIDIA Corporation GA106 High Definition Audio Controller [10de:228e] (rev a1)
     ```
 
-    The PCIe ID of the VGA controller is `10de:2504` and the Audio device is `10de:228e`. Take a note of these IDs. You will need them later.
+    The PCIe ID of the VGA controller is `10de:2504` and the Audio device is `10de:228e`. Take a
+    note of these IDs. You will need them later.
 
-1. Chane the `GRUB_CMDLINE_LINUX_DEFAULT` variable in the `/etc/default/grub` file to include the
+1. Change the `GRUB_CMDLINE_LINUX_DEFAULT` variable in the `/etc/default/grub` file to include the
    following options:
 
     * `intel_iommu=on`: Enable IOMMU for the integrated GPU.
