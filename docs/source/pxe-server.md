@@ -27,20 +27,20 @@ In this section you will create a KVM VM for the PXE server, using a Debian `12.
     root:~# cd /home/user/kubeflow-on-kvm
     ```
 
-    > **Note**: The path `/home/user/kubeflow-on-kmv` is an example. Change it to reflect your working
-    > environment.
+    > **Note**: The path `/home/user/kubeflow-on-kmv` is an example. Change it to reflect your
+    > working environment.
 
 1. Create a new `QCOW2` virtual disk for the VM:
 
     ```console
-    root:~/kubeflow-on-kvm# qemu-img create -f qcow2 /var/lib/libvirt/images/pxe-server.qcow2 32G
+    root:/home/user/kubeflow-on-kvm# qemu-img create -f qcow2 /var/lib/libvirt/images/pxe-server.qcow2 32G
     Formatting '/var/lib/libvirt/images/pxe-server.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=34359738368 lazy_refcounts=off refcount_bits=16
     ```
 
 1. Define a new VM for the PXE server, using the XML file inside the `infra` directory:
 
     ```console
-    root:~/kubeflow-on-kvm# virsh define --file infra/pxe-server.xml
+    root:/home/user/kubeflow-on-kvm# virsh define --file infra/pxe-server.xml
     Domain 'pxe-server' defined from pxe-server.xml
     ```
 
@@ -51,7 +51,7 @@ In this section you will create a KVM VM for the PXE server, using a Debian `12.
 1. Start the PXE server VM:
 
     ```console
-    root:~/kubeflow-on-kvm# virsh start pxe-server
+    root:/home/user/kubeflow-on-kvm# virsh start pxe-server
     Domain 'pxe-server' started
     ```
 
@@ -60,7 +60,7 @@ In this section you will create a KVM VM for the PXE server, using a Debian `12.
    default settings for most of the options.
 
     ```console
-    root:~/kubeflow-on-kvm# virt-manager
+    root:/home/user/kubeflow-on-kvm# virt-manager
     ```   
 
    > **Note**: We recommend doing a minimal installation of Debian, without any graphical interface.
@@ -70,7 +70,7 @@ In this section you will create a KVM VM for the PXE server, using a Debian `12.
 1. Verify that the PXE server VM is running:
 
     ```console
-    root:~/kubeflow-on-kvm# virsh list --all
+    root:/home/user/kubeflow-on-kvm# virsh list --all
     Id   Name         State
     -----------------------------
     1    pxe-server   running
@@ -79,7 +79,7 @@ In this section you will create a KVM VM for the PXE server, using a Debian `12.
 1. Change back to your user:
 
     ```console
-    root:~/kubeflow-on-kvm# exit
+    root:/home/user/kubeflow-on-kvm# exit
     user:~/kubeflow-on-kvm$
     ```
 
