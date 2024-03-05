@@ -1,0 +1,26 @@
+---
+all:
+  hosts:
+    boogie:
+      ansible_connection: local
+      ansible_python_interpreter: /home/dimpo/.pyenv/versions/kubeflow-on-kvm/bin/python
+    k8s-dev1-ctrl:
+    k8s-dev1-worker1:
+    k8s-dev1-worker2:
+  children:
+    qemu:
+      hosts:
+        qemu-k8s-dev1-ctrl:
+          vm_name: k8s-dev1-ctrl
+          vm_vcpus: 4
+          vm_ram_mb: 16384
+          vm_disk_gb: 64
+        qemu-k8s-dev1-worker1:
+          vm_name: k8s-dev1-worker1
+        qemu-k8s-dev1-worker2:
+          vm_name: k8s-dev1-worker2
+      vars: 
+        vm_vcpus: 8
+        vm_ram_mb: 32768
+        vm_disk_gb: 128
+        vm_host: boogie

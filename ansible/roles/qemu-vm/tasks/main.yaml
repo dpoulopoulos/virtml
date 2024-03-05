@@ -1,0 +1,14 @@
+---
+- name: Create a .qcow2 disk image
+  become: true
+  delegate_to: "{{ vm_host }}"
+  command: qemu-img create -f qcow2 {{ libvirt_pool_dir }}/{{ vm_name }}.qcow2 32G
+
+- name: Create VM
+  become: true
+  delegate_to: "{{ vm_host }}"
+  block:
+    - name: Define the VM
+      community.libvirt.virt:
+        command: define
+        xml: "{{ lookup('template', 'vm-template.xml.j2') }}"

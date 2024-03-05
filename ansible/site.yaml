@@ -1,0 +1,6 @@
+---
+- name: Create QEMU VMs
+  hosts: qemu
+  gather_facts: false
+  roles:
+    - role: qemu-vm
