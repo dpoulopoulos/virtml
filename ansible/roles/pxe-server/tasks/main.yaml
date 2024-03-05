@@ -1,0 +1,58 @@
+---
+- name: Verify OS.
+  ansible.builtin.fail:
+    msg: "This role is tested on Debian. Your OS is not supported."
+  when: ansible_facts['os_family'] != 'Debian'
+
+- name: Install required packages.
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - dnsmasq
+    - tftp
+
+- name: Download the network installer for Debian 12.4.
+  ansible.builtin.get_url:
+    url: "https://deb.debian.org/debian/dists/Debian12.5/main/installer-amd64/current/images/netboot/netboot.tar.gz"
+    dest: /tmp/netboot.tar.gz
+    mode: 0644
+
+- name: Create a `tftp` directory for the network installer.
+  ansible.builtin.file:
+    path: /srv/tftp
+    state: directory
+    mode: 0755
+
+- name: Extract the network installer to the `tftp` directory.
+  ansible.builtin.unarchive:
+    src: /tmp/netboot.tar.gz
+    dest: /srv/tftp
+    remote_src: yes
+
+- name: Remove any unnecessary files.
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop:
+  - path: /srv/tftp/ldlinux.c32
+  - path: /srv/tftp/pxelinux.0
+  - path: /srv/tftp/pxelinux.cfg
+
+- name: Create symlinks for the `bootnetx64.efi`` and `grubx64.efi`` files.
+  ansible.builtin.file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+  loop:
+  - src: /srv/tftp/debian-installer/amd64/bootnetx64.efi
+    dest: /srv/tftp/bootnetx64.efi
+  - src: /srv/tftp/debian-installer/amd64/grubx64.efi
+    dest: /srv/tftp/grubx64.efi
+
+- name: Create the dnsmasq configuration file.
+  ansible.builtin.template:
+    src: kubeflow-on-kvm.conf.j2
+    dest: /etc/dnsmasq.d/kubeflow-on-kvm.conf
+    mode: 0644
+  notify: restart-dnsmasq

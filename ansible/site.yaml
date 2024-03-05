@@ -4,3 +4,10 @@
   gather_facts: false
   roles:
     - role: qemu-vm
+  vars:
+    pxe_done: false
+
+- name: Configure PXE Server
+  hosts: pxe-server
+  roles:
+    - role: pxe-server

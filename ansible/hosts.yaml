@@ -4,9 +4,18 @@ all:
     boogie:
       ansible_connection: local
       ansible_python_interpreter: /home/dimpo/.pyenv/versions/kubeflow-on-kvm/bin/python
+    pxe-server:
+      ipv4: 192.168.122.28
+      dhcp_network: 192.168.122.0
+      dhcp_gateway: 192.168.122.1
+      dhcp_netmask: 255.255.255.0
+      dhcp_nameserver: 192.168.122.1
     k8s-dev1-ctrl:
     k8s-dev1-worker1:
     k8s-dev1-worker2:
+  vars:
+    # Ansible will SSH into managed machines as this user
+    ansible_user: root
   children:
     qemu:
       hosts:
