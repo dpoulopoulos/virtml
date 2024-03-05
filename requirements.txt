@@ -1,5 +1,6 @@
 j2cli
 sphinx
+ansible
 myst-parser
 sphinx_rtd_theme
 sphinx-copybutton
