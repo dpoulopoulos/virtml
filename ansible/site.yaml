@@ -1,6 +1,7 @@
 ---
 - name: Create QEMU VMs
   hosts: qemu
+  tags: qemu-vm
   gather_facts: false
   roles:
     - role: qemu-vm
