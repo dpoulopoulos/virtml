@@ -9,7 +9,27 @@
     cmd: qemu-img create -f qcow2 {{ libvirt_pool_dir }}/{{ vm_name }}.qcow2 32G
     creates: "{{ libvirt_pool_dir }}/{{ vm_name }}.qcow2"
 
-- name: Create VM
+# Read the MAC address from the hostvars.
+# If the MAC address does not exist, generate a new one on the fly,
+# and set it as a fact.
+- name: Get or create the MAC address variable
+  set_fact:
+    mac_address: "{{ hostvars[inventory_hostname].mac_address | 
+                     default('52:54:00' | community.general.random_mac) }}"
+
+# Write the MAC address back to the inventory file, and reload it.
+- name: Write the MAC address to the inventory file
+  community.general.ini_file:
+    path: state.ini
+    section: all
+    option: "{{ inventory_hostname }} mac_address"
+    value: "{{ mac_address }}"
+    no_extra_spaces: true
+  delegate_to: localhost
+  throttle: 1
+  notify: reload-inventory
+
+- name: Create the QEMU VM
   become: true
   delegate_to: "{{ vm_host }}"
   block:

@@ -24,6 +24,7 @@
     </disk>
     <interface type='{{ net_type }}'>
       <source {{ net_type }}='{{ vm_net }}'/>
+      <mac address='{{ mac_address }}'/>
       <model type='virtio'/>
       <boot order="2"/>
       <rom bar="off"/>
