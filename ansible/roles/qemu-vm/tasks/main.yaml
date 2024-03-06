@@ -1,8 +1,13 @@
 ---
-- name: Create a .qcow2 disk image
+# Create a .qcow2 disk image, if it does not exist.
+# If a matching file already exists, this step will not be run, due to the
+# `creates` parameter.
+- name: Create a .qcow2 disk image if it does not exist
   become: true
   delegate_to: "{{ vm_host }}"
-  command: qemu-img create -f qcow2 {{ libvirt_pool_dir }}/{{ vm_name }}.qcow2 32G
+  ansible.builtin.command:
+    cmd: qemu-img create -f qcow2 {{ libvirt_pool_dir }}/{{ vm_name }}.qcow2 32G
+    creates: "{{ libvirt_pool_dir }}/{{ vm_name }}.qcow2"
 
 - name: Create VM
   become: true
