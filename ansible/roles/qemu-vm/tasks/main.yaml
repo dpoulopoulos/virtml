@@ -6,8 +6,9 @@
   become: true
   delegate_to: "{{ vm_host }}"
   ansible.builtin.command:
-    cmd: qemu-img create -f qcow2 {{ libvirt_pool_dir }}/{{ vm_name }}.qcow2 32G
-    creates: "{{ libvirt_pool_dir }}/{{ vm_name }}.qcow2"
+    cmd: |
+      qemu-img create -f qcow2 {{ libvirt_pool_dir }}/{{ inventory_hostname }}.qcow2 32G
+    creates: "{{ libvirt_pool_dir }}/{{ inventory_hostname }}.qcow2"
 
 # Read the MAC address from the hostvars.
 # If the MAC address does not exist, generate a new one on the fly,
