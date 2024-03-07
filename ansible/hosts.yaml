@@ -16,6 +16,8 @@ all:
   vars:
     # Ansible will SSH into managed machines as this user
     ansible_user: root
+
+    vm_host: boogie
   children:
     qemu:
       hosts:
@@ -32,4 +34,3 @@ all:
         vm_vcpus: 8
         vm_ram_mb: 32768
         vm_disk_gb: 128
-        vm_host: boogie
