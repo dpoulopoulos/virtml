@@ -57,6 +57,12 @@
     mode: 0644
   notify: restart-dnsmasq
 
+- name: Create the GRUB configuration file.
+  ansible.builtin.template:
+    src: grub.cfg.j2
+    dest: /srv/tftp/debian-installer/amd64/grub/grub.cfg
+    mode: 0644
+
 - name: Copy the Debian preseed file on the PXE server
   ansible.builtin.template:
     src: preseed.cfg.j2
