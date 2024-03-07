@@ -38,3 +38,11 @@
       community.libvirt.virt:
         command: define
         xml: "{{ lookup('template', 'vm-template.xml.j2') }}"
+
+- name: Start the PXE client
+  community.libvirt.virt:
+    name: "{{ inventory_hostname }}"
+    command: start
+    state: running
+  delegate_to: "{{ vm_host }}"
+  when: pxe_done

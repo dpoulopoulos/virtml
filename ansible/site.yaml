@@ -19,3 +19,11 @@
   roles:
     - role: pxe-client
 
+- name: Start QEMU VMs
+  hosts: qemu
+  tags: qemu-vm
+  gather_facts: false
+  roles:
+    - role: qemu-vm
+  vars:
+    pxe_done: true
