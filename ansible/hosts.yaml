@@ -11,13 +11,17 @@ all:
       dhcp_netmask: 255.255.255.0
       dhcp_nameserver: 192.168.122.1
     k8s-dev1-ctrl:
+      ipv4: 192.168.122.128
     k8s-dev1-worker1:
+      ipv4: 192.168.122.129
     k8s-dev1-worker2:
+      ipv4: 192.168.122.130
   vars:
     # Ansible will SSH into managed machines as this user
     ansible_user: root
 
     vm_host: boogie
+    pxe_server: pxe-server
   children:
     qemu:
       hosts:

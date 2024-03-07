@@ -1,0 +1,8 @@
+---
+- name: restart-dnsmasq
+  ansible.builtin.service:
+    name: dnsmasq
+    enabled: true
+    state: restarted
+  delegate_to: "{{ pxe_server }}"
+  run_once: true

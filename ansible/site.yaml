@@ -12,3 +12,10 @@
   hosts: pxe-server
   roles:
     - role: pxe-server
+
+- name: Configure PXE Clients
+  hosts: all:!admin
+  gather_facts: false
+  roles:
+    - role: pxe-client
+

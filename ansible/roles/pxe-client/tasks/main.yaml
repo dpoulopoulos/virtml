@@ -1,0 +1,14 @@
+---
+- name: Use the dash to separate the PXE client's MAC address
+  ansible.builtin.set_fact:
+    macdashes: '{{ mac_address | replace(":", "-") }}'
+
+- name: Create a dnsmasq entry for each PXE client
+  ansible.builtin.template:
+    src: dnsmasq.conf.j2
+    dest: /etc/dnsmasq.d/kubeflow-on-kvm-{{ macdashes }}.conf
+    owner: root
+    group: root
+    mode: 0644
+  delegate_to: "{{ pxe_server }}"
+  notify: restart-dnsmasq
