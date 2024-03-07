@@ -31,3 +31,7 @@ all:
         vm_vcpus: 8
         vm_ram_mb: 32768
         vm_disk_gb: 128
+    admin:
+      hosts:
+        boogie:
+        pxe-server:
