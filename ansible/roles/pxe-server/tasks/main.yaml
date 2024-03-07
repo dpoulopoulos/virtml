@@ -56,3 +56,9 @@
     dest: /etc/dnsmasq.d/kubeflow-on-kvm.conf
     mode: 0644
   notify: restart-dnsmasq
+
+- name: Copy the Debian preseed file on the PXE server
+  ansible.builtin.template:
+    src: preseed.cfg.j2
+    dest: /srv/tftp/preseed.cfg
+    mode: 0644

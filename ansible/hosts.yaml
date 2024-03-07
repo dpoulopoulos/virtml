@@ -20,6 +20,10 @@ all:
     # Ansible will SSH into managed machines as this user
     ansible_user: root
 
+    # Define the password for the root user on the managed machines
+    rootpw_hash: |
+      $6$QDiGMXBTKPwTglrM$JJ4yRe4mw.SgPWVIOb/E/SYN5wQlRatEFR96NkHTqoBco334jh1pmulQ.Y64EAKc7KVNvepKdzWTjp5NxzjGz1
+
     vm_host: boogie
     pxe_server: pxe-server
   children:
