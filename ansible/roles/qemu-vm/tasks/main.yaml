@@ -39,7 +39,7 @@
         command: define
         xml: "{{ lookup('template', 'vm-template.xml.j2') }}"
 
-- name: Start the PXE client
+- name: Start the QEMU VM
   community.libvirt.virt:
     name: "{{ inventory_hostname }}"
     command: start

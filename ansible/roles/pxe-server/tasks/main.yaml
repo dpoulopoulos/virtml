@@ -1,10 +1,10 @@
 ---
-- name: Verify OS family.
+- name: Verify OS family
   ansible.builtin.fail:
     msg: "This role is tested on Debian. Your OS is not supported."
   when: ansible_facts['os_family'] != 'Debian'
 
-- name: Install required packages.
+- name: Install required packages
   ansible.builtin.apt:
     name: "{{ item }}"
     state: present
@@ -12,7 +12,7 @@
     - dnsmasq
     - tftp
 
-- name: Create a `tftp` directory to serve the network installer.
+- name: Create a `tftp` directory to serve the network installer
   ansible.builtin.file:
     path: /srv/tftp
     state: directory
@@ -23,34 +23,34 @@
     path: /srv/tftp/version.info
   register: version_file_exists
 
-- name: Read the Debian version already present in the `tftp` directory.
+- name: Read the Debian version already present in the `tftp` directory
   block:
   - name: Slurp hosts file
     ansible.builtin.slurp:
       src: /srv/tftp/version.info
     register: slurpfile
-  - name: Extract Debian major and minor version numbers.
+  - name: Extract Debian major and minor version numbers
     set_fact:
       major_version: "{{ slurpfile['content'] | b64decode | regex_search('.*\\s*\\d+.*\\+deb(\\d+)u\\d+', '\\1') }}"
       minor_version: "{{ slurpfile['content'] | b64decode | regex_search('.*\\s*\\d+.*\\+deb\\d+u(\\d+)', '\\1') }}"
-  - name: Combine major and minor version numbers to format `x.x`.
+  - name: Combine major and minor version numbers to format `x.x`
     set_fact:
       formatted_version: "{{ major_version[0] }}.{{ minor_version[0] }}"
   when: version_file_exists.stat.exists
 
-- name: Structure the `tftp` directory.
+- name: Structure the `tftp` directory
   block:
-  - name: Download the network installer for Debian 12 (Bookworm).
+  - name: Download the network installer for Debian 12 (Bookworm)
     ansible.builtin.get_url:
       url: "https://deb.debian.org/debian/dists/Debian{{ debian_version }}/main/installer-amd64/current/images/netboot/netboot.tar.gz"
       dest: /tmp/netboot.tar.gz
       mode: 0644
-  - name: Extract the network installer to the `tftp` directory.
+  - name: Extract the network installer to the `tftp` directory
     ansible.builtin.unarchive:
       src: /tmp/netboot.tar.gz
       dest: /srv/tftp
       remote_src: yes
-  - name: Remove any unnecessary files.
+  - name: Remove any unnecessary files
     ansible.builtin.file:
       path: "{{ item.path }}"
       state: absent
@@ -58,7 +58,7 @@
     - path: /srv/tftp/ldlinux.c32
     - path: /srv/tftp/pxelinux.0
     - path: /srv/tftp/pxelinux.cfg
-  - name: Create symlinks for the `bootnetx64.efi`` and `grubx64.efi`` files.
+  - name: Create symlinks for the `bootnetx64.efi` and `grubx64.efi` files
     ansible.builtin.file:
       src: "{{ item.src }}"
       dest: "{{ item.dest }}"
@@ -68,7 +68,7 @@
       dest: /srv/tftp/bootnetx64.efi
     - src: /srv/tftp/debian-installer/amd64/grubx64.efi
       dest: /srv/tftp/grubx64.efi
-  - name: Create the GRUB configuration file.
+  - name: Create the GRUB configuration file
     ansible.builtin.template:
       src: grub.cfg.j2
       dest: /srv/tftp/debian-installer/amd64/grub/grub.cfg
@@ -80,7 +80,7 @@
       mode: 0644
   when: (formatted_version is undefined) or (formatted_version | trim  != debian_version | trim)
 
-- name: Create the dnsmasq configuration file.
+- name: Create the dnsmasq configuration file
   ansible.builtin.template:
     src: kubeflow-on-kvm.conf.j2
     dest: /etc/dnsmasq.d/kubeflow-on-kvm.conf
