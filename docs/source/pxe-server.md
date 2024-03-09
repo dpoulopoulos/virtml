@@ -310,6 +310,29 @@ network and install Debian `12.4` on it.
     root@pxe-server:/etc/dnsmasq.d# systemctl restart dnsmasq
     ```
 
+1. Return to your local machine:
+
+    ```console
+    root@pxe-server:/etc/dnsmasq.d# exit
+    user:~/kubeflow-on-kvm$
+    ```
+
+1. Change the `grub.cfg` file to choose the "Automated Install" option by default, and pull the
+   preseed file from the network:
+
+    ```console
+    root@pxe-server:/srv/tftp# EXPORT PXE_SERVER="192.168.122.16"
+    ```
+
+    > **Note**: Replace the `PXE_SERVER` IP value with your PXE server IP address.
+
+    ```console
+    root@pxe-server:/srv/tftp# j2 infra/grub.cfg.j2 > infra/grub.cfg
+    ```
+
+    ```console
+    root@pxe-server:/srv/tftp# scp infra/grub.cfg root@pxe-server:/srv/tftp/debian-installer/amd64/grub/grub.cfg
+    ```
 ### Verify
 
 1. Ensure that the `dnsmasq` service is running:
