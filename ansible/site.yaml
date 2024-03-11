@@ -1,9 +1,9 @@
 ---
-- name: Create QEMU VMs
-  hosts: qemu
+- name: Create libvirt VMs
+  hosts: libvirt
   gather_facts: false
   roles:
-    - role: qemu-vm
+    - role: libvirt
   vars:
     pxe_done: false
 
@@ -18,10 +18,10 @@
   roles:
     - role: pxe-client
 
-- name: Start QEMU VMs
-  hosts: qemu
+- name: Start libvirt VMs
+  hosts: libvirt
   gather_facts: false
   roles:
-    - role: qemu-vm
+    - role: libvirt
   vars:
     pxe_done: true

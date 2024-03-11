@@ -27,7 +27,7 @@ all:
     vm_host: boogie
     pxe_server: pxe-server
   children:
-    qemu:
+    libvirt:
       hosts:
         k8s-dev1-ctrl:
           vm_vcpus: 4

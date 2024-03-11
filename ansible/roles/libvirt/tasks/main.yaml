@@ -30,7 +30,7 @@
   throttle: 1
   notify: reload-inventory
 
-- name: Create the QEMU VM
+- name: Create the libvirt VM
   become: true
   delegate_to: "{{ vm_host }}"
   block:
@@ -39,7 +39,7 @@
         command: define
         xml: "{{ lookup('template', 'vm-template.xml.j2') }}"
 
-- name: Start the QEMU VM
+- name: Start the libvirt VM
   community.libvirt.virt:
     name: "{{ inventory_hostname }}"
     command: start
