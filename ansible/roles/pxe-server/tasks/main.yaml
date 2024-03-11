@@ -18,38 +18,28 @@
     state: directory
     mode: 0755
 
-- name: Check if the a Debian version file already exists in the `tftp` directory
-  ansible.builtin.stat:
-    path: /srv/tftp/version.info
-  register: version_file_exists
-
-- name: Read the Debian version already present in the `tftp` directory
-  block:
-  - name: Slurp hosts file
-    ansible.builtin.slurp:
-      src: /srv/tftp/version.info
-    register: slurpfile
-  - name: Extract Debian major and minor version numbers
-    set_fact:
-      major_version: "{{ slurpfile['content'] | b64decode | regex_search('.*\\s*\\d+.*\\+deb(\\d+)u\\d+', '\\1') }}"
-      minor_version: "{{ slurpfile['content'] | b64decode | regex_search('.*\\s*\\d+.*\\+deb\\d+u(\\d+)', '\\1') }}"
-  - name: Combine major and minor version numbers to format `x.x`
-    set_fact:
-      formatted_version: "{{ major_version[0] }}.{{ minor_version[0] }}"
-  when: version_file_exists.stat.exists
-
 - name: Structure the `tftp` directory
   block:
   - name: Download the network installer for Debian 12 (Bookworm)
     ansible.builtin.get_url:
       url: "https://deb.debian.org/debian/dists/Debian{{ debian_version }}/main/installer-amd64/current/images/netboot/netboot.tar.gz"
-      dest: /tmp/netboot.tar.gz
+      dest: /srv/tftp/netboot.tar.gz
       mode: 0644
+      checksum: sha256:9ae301b2f6b31d6c94ca0a46b6428b550bd84416113e34054cd9167033e2c18b
+  # The `version.info` file is the last file that is extracted when we extract
+  # the network installer. We can use this file to check if the network
+  # installer has already been extracted.
+  - name: Check that the `version.info` exists
+    stat:
+      path: /srv/tftp/version.info
+    register: stat_version_info
   - name: Extract the network installer to the `tftp` directory
     ansible.builtin.unarchive:
-      src: /tmp/netboot.tar.gz
+      src: /srv/tftp/netboot.tar.gz
       dest: /srv/tftp
       remote_src: yes
+    # Only when `version.info` is not present in the `tftp` directory.
+    when: not stat_version_info.stat.exists
   - name: Remove any unnecessary files
     ansible.builtin.file:
       path: "{{ item.path }}"
@@ -78,7 +68,6 @@
       src: preseed.cfg.j2
       dest: /srv/tftp/preseed.cfg
       mode: 0644
-  when: (formatted_version is undefined) or (formatted_version | trim  != debian_version | trim)
 
 - name: Create the dnsmasq configuration file
   ansible.builtin.template:
