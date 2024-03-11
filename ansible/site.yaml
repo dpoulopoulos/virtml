@@ -1,5 +1,5 @@
 ---
-- name: Create libvirt VMs
+- name: Define or decommission libvirt domains
   hosts: libvirt
   gather_facts: false
   roles:
@@ -18,7 +18,7 @@
   roles:
     - role: pxe-client
 
-- name: Start libvirt VMs
+- name: Start or destroy libvirt domains
   hosts: libvirt
   gather_facts: false
   roles:
