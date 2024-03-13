@@ -92,7 +92,7 @@
     delegate_to: "{{ vm_host }}"
     throttle: 1
     notify: reload-inventory
-    when: pxe_done and inventory_hostname in domains.list_vms
+    when: pxe_done and inventory_hostname not in domains.list_vms
   - name: Remove the .qcow2 disk image
     become: true
     delegate_to: "{{ vm_host }}"
