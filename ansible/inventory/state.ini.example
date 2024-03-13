@@ -1,0 +1,5 @@
+[all]
+k8s-dev1-ctrl state=present
+k8s-dev1-worker1 state=present
+k8s-dev1-worker2 state=present
+kubespray-admin state=present
