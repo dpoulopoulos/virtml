@@ -1,4 +1,4 @@
-DEFAULT_ARGS = -i hosts.yaml -i state.ini
+DEFAULT_ARGS = -i inventory/hosts.yaml -i inventory/state.ini
 
 ANSIBLE_DIFF ?= --diff
 
