@@ -22,9 +22,15 @@ all:
     # Ansible will SSH into managed machines as this user
     ansible_user: root
 
+    # Local user on the control machine
+    user: dimpo
+
     # Define the password for the root user on the managed machines
     rootpw_hash: |
       $6$QDiGMXBTKPwTglrM$JJ4yRe4mw.SgPWVIOb/E/SYN5wQlRatEFR96NkHTqoBco334jh1pmulQ.Y64EAKc7KVNvepKdzWTjp5NxzjGz1
+
+    # Define the SSH key for the root user on the managed machines
+    ssh_key: "{{ lookup('file', '/home/{{ user }}/.ssh/id_rsa.pub') }}"
 
     vm_host: boogie
     pxe_server: pxe-server
