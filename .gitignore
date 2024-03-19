@@ -1,2 +1,5 @@
 # Ignore any `build` directory
 build/
+
+# Ignore kubeadm credentials
+credentials

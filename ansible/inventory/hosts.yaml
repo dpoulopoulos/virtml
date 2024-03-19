@@ -6,18 +6,66 @@ all:
       ansible_python_interpreter: "{{ python_interpreter }}"
     pxe-server:
       ipv4: 192.168.122.28
-    k8s-dev1-ctrl:
+    node1:
+      ip: 192.168.122.128
       ipv4: 192.168.122.128
-    k8s-dev1-worker1:
+      access_ip: 192.168.122.128
+      ansible_host: 192.168.122.128
+    node2:
+      ip: 192.168.122.129
       ipv4: 192.168.122.129
-    k8s-dev1-worker2:
+      access_ip: 192.168.122.129
+      ansible_host: 192.168.122.129
+    node3:
+      ip: 192.168.122.130
       ipv4: 192.168.122.130
+      access_ip: 192.168.122.130
+      ansible_host: 192.168.122.130
+    node4:
+      ip: 192.168.122.131
+      ipv4: 192.168.122.131
+      access_ip: 192.168.122.131
+      ansible_host: 192.168.122.131
+    node5:
+      ip: 192.168.122.132
+      ipv4: 192.168.122.132
+      access_ip: 192.168.122.132
+      ansible_host: 192.168.122.132
   children:
     libvirt:
       hosts:
-        k8s-dev1-ctrl:
-        k8s-dev1-worker1:
-        k8s-dev1-worker2:
+        node1:
+        node2:
+        node3:
+        node4:
+        node5:
+    kubernetes:
+      hosts:
+        node1:
+        node2:
+        node3:
+        node4:
+        node5:
+    kubemasters:
+      hosts:
+        node1:
+        node2:
+        node3:
+    k8s_cluster:
+      children:
+        kubernetes:
+    kube_node:
+      children:
+        kubernetes:
+    kube_control_plane:
+      children:
+        kubemasters:
+    etcd:
+      children:
+        kubemasters:
+    Kubespray:
+      children:
+        kubernetes:
     admin:
       hosts:
         boogie:

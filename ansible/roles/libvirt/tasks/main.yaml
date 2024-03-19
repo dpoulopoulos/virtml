@@ -56,6 +56,12 @@
       state: running
     delegate_to: "{{ vm_host }}"
     when: pxe_done
+  - name: Pause execution until Debian installation is complete
+    ansible.builtin.pause:
+      prompt: |
+        "Wait for the Debian installation to complete, then press Enter to continue."
+    delegate_to: "{{ vm_host }}"
+    when: pxe_done
   when: state == 'present'
 
 # If the state for the current host is set to `absent` in the `state.ini` file:

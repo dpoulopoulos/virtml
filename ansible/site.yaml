@@ -25,3 +25,6 @@
     - role: libvirt
   vars:
     pxe_done: true
+
+- name: Install Kubernetes with Kubespray
+  ansible.builtin.import_playbook: kubespray/playbooks/cluster.yml
