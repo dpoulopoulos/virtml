@@ -16,8 +16,6 @@ all:
       ipv4: 192.168.122.129
     k8s-dev1-worker2:
       ipv4: 192.168.122.130
-    kubespray-admin:
-      ipv4: 192.168.122.131
   vars:
     # Ansible will SSH into managed machines as this user
     ansible_user: root
@@ -43,10 +41,6 @@ all:
           vm_disk_gb: 64
         k8s-dev1-worker1:
         k8s-dev1-worker2:
-        kubespray-admin:
-          vm_vcpus: 2
-          vm_ram_mb: 4096
-          vm_disk_gb: 16
       vars: 
         vm_vcpus: 8
         vm_ram_mb: 32768
