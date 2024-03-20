@@ -31,7 +31,7 @@
                       default('52:54:00' | community.general.random_mac) }}"
   - name: Write MAC address to the inventory file
     community.general.ini_file:
-      path: inventory/state.ini
+      path: ../inventory/state.ini
       section: all
       option: "{{ inventory_hostname }} mac_address"
       value: "{{ mac_address }}"
@@ -91,7 +91,7 @@
   # until the PXE Server is also updated.
   - name: Remove the MAC address from the inventory file
     community.general.ini_file:
-      path: inventory/state.ini
+      path: ../inventory/state.ini
       section: all
       option: "{{ inventory_hostname }} mac_address"
       state: absent

@@ -1,0 +1,3 @@
+---
+- name: Set up a Kubernetes cluster
+  ansible.builtin.import_playbook: playbooks/cluster.yaml
