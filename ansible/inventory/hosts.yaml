@@ -63,7 +63,7 @@ all:
     etcd:
       children:
         kubemasters:
-    Kubespray:
+    kubespray:
       children:
         kubernetes:
     admin:
