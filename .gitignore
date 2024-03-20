@@ -3,3 +3,6 @@ build/
 
 # Ignore kubeadm credentials
 credentials
+
+# Ignore poject files
+**/state.ini
