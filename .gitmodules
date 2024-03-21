@@ -2,3 +2,6 @@
 	path = ansible/kubespray
 	url = https://github.com/kubernetes-sigs/kubespray.git
 	branch = release-2.24
+[submodule "kubeflow-manifests"]
+	path = kubeflow-manifests
+	url = https://github.com/kubeflow/manifests.git
