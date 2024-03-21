@@ -1,0 +1,3 @@
+---
+- name: Add a new node to the Kubernetes cluster
+  ansible.builtin.import_playbook: playbooks/facts.yaml
