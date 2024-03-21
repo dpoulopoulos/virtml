@@ -1,0 +1,3 @@
+---
+- name: Remove a Kubernetes node
+  ansible.builtin.import_playbook: playbooks/remove-k8s-node.yaml
