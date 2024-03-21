@@ -14,10 +14,10 @@ kubernetes:
 # https://kubespray.io/#/docs/nodes?id=_2-run-scaleyml
 add-node:
 	ansible-playbook $(DEFAULT_ARGS) $(ANSIBLE_DIFF) facts.yaml
-	ansible-playbook $(DEFAULT_ARGS) $(ANSIBLE_DIFF) add-k8s-node.yaml --limit=$(node)
+	ansible-playbook $(DEFAULT_ARGS) $(ANSIBLE_DIFF) add-k8s-node.yaml --limit=$(new-node)
 
 remove-node:
-	ansible-playbook $(DEFAULT_ARGS) $(ANSIBLE_DIFF) remove-k8s-node.yaml -e node=$(node)
+	ansible-playbook $(DEFAULT_ARGS) $(ANSIBLE_DIFF) remove-k8s-node.yaml -e node=$(old-node)
 
 # If the node you want to remove is not online, you should add
 # `reset_nodes=false` and `allow_ungraceful_removal=true` to your extra-vars:
@@ -28,4 +28,3 @@ remove-offline-node:
 # To replace a node, first add the new node to the inventory, locate the node
 # to be replaced, and then run the following Make target.
 replace-node: add-node remove-node
->>>>>>> 4e67430 (fixup! ansible: Remove existing k8s node)
