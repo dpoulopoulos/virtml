@@ -4,5 +4,10 @@ build/
 # Ignore kubeadm credentials
 credentials
 
+# Ignore Kubespray's linked files
+**/group_vars/kubespray
+**/group_vars/k8s_cluster
+**/group_vars/etcd.yml
+
 # Ignore poject files
 **/state.ini
