@@ -7,4 +7,4 @@ Kubeflow on KVM is a project dedicated to simplifying the process of setting up
 [Kubeflow](https://www.kubeflow.org/) in a virtualized environment, making it easier for data
 scientists to leverage the power of Machine Learning (ML) workflows on Kubernetes.
 
-To get started, visit the [Kubeflow on KVM documentation](https://kubeflow-kvm.readthedocs.io/en/latest/).
+To get started, visit the [Kubeflow on KVM documentation](https://dpoulopoulos.github.io/kubeflow-on-kvm/).
