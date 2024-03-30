@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Kubeflow on KVM'
+project = 'VirtML'
 copyright = '2024, Dimitris Poulopoulos'
 author = 'Dimitris Poulopoulos'
 release = '0.0.1'
