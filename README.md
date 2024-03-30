@@ -11,6 +11,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue)](#license)
 [![Docs](https://img.shields.io/badge/docs-passing-green)](#docs)
+[![Debian](https://img.shields.io/badge/debian-bookworm-red)](#debian)
 [![Kubeflow](https://img.shields.io/badge/kubeflow-v1.8-orange)](#kubeflow)
 [![Kubernetes](https://img.shields.io/badge/kubernetes-v1.29.3-orange)](#kubernetes)
 
