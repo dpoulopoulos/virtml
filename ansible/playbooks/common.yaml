@@ -1,0 +1,6 @@
+---
+- name: Set up the Virtual Machines
+  hosts: libvirt
+  gather_facts: false
+  roles:
+    - role: common

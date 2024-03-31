@@ -1,0 +1,16 @@
+---
+- name: Install required packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - sudo
+    - jq
+  when: state == 'present'
+
+- name: Install Kubernetes
+  ansible.builtin.pause:
+    prompt: |
+      "Press Enter to continue installing Kubernetes."
+  delegate_to: "{{ vm_host }}"
+  when: state == 'present'

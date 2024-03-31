@@ -2,5 +2,8 @@
 - name: Set up the infrastructure
   import_playbook: infrastructure.yaml
 
+- name: Set up the VMs
+  import_playbook: common.yaml
+
 - name: Install Kubernetes with Kubespray
   ansible.builtin.import_playbook: ../kubespray/playbooks/cluster.yml
