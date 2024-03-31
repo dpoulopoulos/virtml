@@ -105,4 +105,8 @@
     ansible.builtin.file:
       path: "{{ libvirt_pool_dir }}/{{ inventory_hostname }}.qcow2"
       state: absent
+  - name: Remove node from known hosts
+    ansible.builtin.command:
+      cmd: "ssh-keygen -f \"~/.ssh/known_hosts\" -R {{ ipv4 }}"
+    delegate_to: "{{ vm_host }}"
   when: state == 'absent'
