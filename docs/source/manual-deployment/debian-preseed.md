@@ -14,7 +14,7 @@ the same process.
 
 To complete this guide, you will need the following:
 
-* A working [QEMU/KVM installation](qemu-kvm).
+* A working [QEMU/KVM installation](../qemu-kvm).
 * A configured [PXE Server](pxe-server).
 
 ### Procedure
