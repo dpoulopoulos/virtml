@@ -1,11 +1,11 @@
 # GPU Passthrough using VFIO
 
-This guide demonstrates the process of passing a GPU through to a Virtual Machine (VM) on KVM, an
+This guide walks you througη the process of passing a GPU through to a Virtual Machine (VM), an
 essential step for setting up a VM to function as a Kubernetes GPU worker.
 
-🚧 🚧 🚧 This is Work-in-Progress. 🚧 🚧 🚧
-
 ## What you'll need
+
+Το complete this guide, you will need the following:
 
 * A Debian-based system.
 * A working [QEMU/KVM installation](qemu-kvm).
@@ -17,9 +17,14 @@ dedicated GPU available for use by the VM.
 
 ### What you'll need
 
+To complete this step, you will need:
+
 * Access to the BIOS settings of the host machine.
 
 ### Procedure
+
+Follow the steps below to set the primary display for the host machine. The steps configure the X
+server to use the integrated GPU and set the primary display in the BIOS settings.
 
 <!-- 1. Change to root user:
 
@@ -31,35 +36,37 @@ dedicated GPU available for use by the VM.
 1. Get the BusID of the integrated GPU by running the following command:
 
    ```console
-    user:~/kubeflow-on-kvm$ lspci | grep VGA
+    user:~/virtml$ lspci | grep VGA
     00:02.0 VGA compatible controller: Intel Corporation Raptor Lake-S GT1 [UHD Graphics 770] (rev 04)
     01:00.0 VGA compatible controller: NVIDIA Corporation GA106 [GeForce RTX 3060 Lite Hash Rate] (rev a1)
     ```
 
+    ```{note}
     In this example, the BusID of the integrated GPU is `PCI:0:2:0`.
+    ```
 
 1. Export the BusID in an environment variable:
 
     ```console
-    user:~/kubeflow-on-kvm$ export PCI_BUS_ID="PCI:0:2:0"
+    user:~/virtml$ export PCI_BUS_ID="PCI:0:2:0"
     ```
 
 1. Create the configuration file for the X server, using the provided template:
 
     ```console
-    user:~/kubeflow-on-kvm$ j2 infra/intel.conf.j2 > intel.conf
+    user:~/virtml$ j2 infra/intel.conf.j2 > intel.conf
     ```
 
 1. Copy the configuration file to the X server configuration directory:
 
     ```console
-    user:~/kubeflow-on-kvm$ sudo cp intel.conf /etc/X11/xorg.conf.d/20-intel.conf
+    user:~/virtml$ sudo cp intel.conf /etc/X11/xorg.conf.d/20-intel.conf
     ```
 
 1. Change the ownership and the group of the configuration file to `root`:
 
     ```console
-    user:~/kubeflow-on-kvm$ sudo chown root:root /etc/X11/xorg.conf.d/20-intel.conf
+    user:~/virtml$ sudo chown root:root /etc/X11/xorg.conf.d/20-intel.conf
     ```
 
 1. Boot to UEFI/BIOS settings, and set the primary display to the integrated GPU. Look under
@@ -67,7 +74,7 @@ dedicated GPU available for use by the VM.
    monitor directly to the motherboard. Alternativelly, set it to "CPU" or "iGPU" if available.
 
     ```console
-    root:~# sudo systemctl reboot --firmware-setup
+    user:~/virtml$ sudo systemctl reboot --firmware-setup
     ```
 
 ## Step 2: Enable GPU Passthrough
@@ -77,9 +84,21 @@ the NVIDIA driver during boot.
 
 ### What you'll need
 
+To complete this step, you will need:
+
 * A dedicated GPU that is not being used by the host.
 
 ### Procedure
+
+Follow the steps below to bind the GPU to the VFIO driver and prevent the Linux Kernel from loading
+the NVIDIA driver during boot.
+
+1. Change to root user:
+
+    ```console
+    user:~/virtml$ sudo su -
+    root:~#
+    ```
 
 1. Get the PCIe ID of the GPU:
 
@@ -89,8 +108,10 @@ the NVIDIA driver during boot.
     01:00.1 Audio device [0403]: NVIDIA Corporation GA106 High Definition Audio Controller [10de:228e] (rev a1)
     ```
 
+    ```{note}
     The PCIe ID of the VGA controller is `10de:2504` and the Audio device is `10de:228e`. Take a
     note of these IDs. You will need them later.
+    ```
 
 1. Change the `GRUB_CMDLINE_LINUX_DEFAULT` variable in the `/etc/default/grub` file to include the
    following options:
@@ -123,7 +144,9 @@ the NVIDIA driver during boot.
     softdep nvidia pre: vfio-pci
     ```
 
+    ```{important}
     Replace `10de:2504,10de:228e` with the PCIe IDs of your GPU.
+    ```
     
     c. Run `CTRL + D` to exit.
 
@@ -140,6 +163,8 @@ the NVIDIA driver during boot.
     ```
 
 ### Verify
+
+Verify that the GPU is bound to the VFIO driver:
 
 1. Check if the GPU is bound to the VFIO driver:
 

@@ -1,148 +1,29 @@
 # Configure a PXE server
 
-This guide will help you configure a PXE server to boot the control-plane and worker nodes of a
-Kubernetes cluster.
+This guide will walk you through configuring a PXE server to boot any machine that is connected to
+the same network and install Debian `12.4` on it.
 
-## Step 1: Create a VM for the PXE server on KVM
+## What you'll need
 
-In this section you will create a KVM VM for the PXE server, using a Debian `12.4` image.
+To complete this guide, you will need the following:
 
-### What you'll need
+* A VM with [Debian `12.4`](debian-vm) installed.
 
-* A working [QEMU/KVM installation](qemu-kvm).
-* A Debian `12.4` ISO. You can download it from the [official Debian website](https://www.debian.org/distrib/netinst).
+## Procedure
 
-### Procedure
-
-1. Change to root user:
-
-    ```console
-    user:~$ sudo su -
-    root:~#
-    ```
-
-1. Navigate to the project's root directory:
-
-    ```console
-    root:~# cd /home/user/kubeflow-on-kvm
-    ```
-
-    > **Note**: The path `/home/user/kubeflow-on-kmv` is an example. Change it to reflect your
-    > working environment.
-
-1. Create a new `QCOW2` virtual disk for the VM:
-
-    ```console
-    root:/home/user/kubeflow-on-kvm# qemu-img create -f qcow2 /var/lib/libvirt/images/pxe-server.qcow2 32G
-    Formatting '/var/lib/libvirt/images/pxe-server.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=34359738368 lazy_refcounts=off refcount_bits=16
-    ```
-
-1. Define a new VM for the PXE server, using the XML file inside the `infra` directory:
-
-    ```console
-    root:/home/user/kubeflow-on-kvm# virsh define --file infra/pxe-server.xml
-    Domain 'pxe-server' defined from pxe-server.xml
-    ```
-
-    > **Note**: The `pxe-server.xml` file is a template for the PXE server VM. You can modify it to
-    > fit your needs. Pay close attention to the sections where you specify the path to the
-    > `QCOW2` file and the Debian `12.4` ISO.
-
-1. Start the PXE server VM:
-
-    ```console
-    root:/home/user/kubeflow-on-kvm# virsh start pxe-server
-    Domain 'pxe-server' started
-    ```
-
-1. Connect to the PXE server VM through the "Virtual Machine Manager" UI and run the Debian
-   installer. The Debian installer will guide you through the installation process. You can use the
-   default settings for most of the options.
-
-    ```console
-    root:/home/user/kubeflow-on-kvm# virt-manager
-    ```   
-
-   > **Note**: We recommend doing a minimal installation of Debian, without any graphical interface.
-
-### Verify
-
-1. Verify that the PXE server VM is running:
-
-    ```console
-    root:/home/user/kubeflow-on-kvm# virsh list --all
-    Id   Name         State
-    -----------------------------
-    1    pxe-server   running
-    ```
-
-1. Change back to your user:
-
-    ```console
-    root:/home/user/kubeflow-on-kvm# exit
-    user:~/kubeflow-on-kvm$
-    ```
-
-1. Create an SSH key, if you don't already have one:
-
-    ```console
-    user:~/kubeflow-on-kvm$ ssh-keygen
-    ```
-
-1. Copy the SSH public key to the PXE server VM:
-
-    ```console
-    user:~/kubeflow-on-kvm$ ssh-copy-id user@pxe-server
-    ```
-
-    > **Note**: Replace `user` with your username and `pxe-server` with the IP address of the PXE
-    > server VM.
-
-1. Verify that you can SSH into the PXE server VM:
-
-    ```console
-    user:~/kubeflow-on-kvm/infra$ ssh user@pxe-server
-    The authenticity of host '192.168.122.89 (192.168.122.89)' can't be established.
-    ED25519 key fingerprint is SHA256:dNnHdISPbUDbtJWqSLDpEdGEO3tGEIQ1TiSrfPxyRHg.
-    This key is not known by any other names.
-    Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-    Warning: Permanently added '192.168.122.89' (ED25519) to the list of known hosts.
-    dimpo@192.168.122.89's password: 
-    Linux pxe-server 6.1.0-17-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.69-1 (2023-12-30) x86_64
-
-    The programs included with the Debian GNU/Linux system are free software;
-    the exact distribution terms for each program are described in the
-    individual files in /usr/share/doc/*/copyright.
-
-    Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
-    permitted by applicable law.
-    Last login: Wed Feb  7 18:10:32 2024
-    user@pxe-server:~$
-    ```
-
-    > **Note**: Replace `user` with your username and `pxe-server` with the IP address of the PXE
-    > server VM.
-
-## Step 2: Configure the PXE server
-
-In this section you will configure the PXE server to boot any machine that is connected to the same
-network and install Debian `12.4` on it.
-
-### What you'll need
-
-* A VM with Debian `12.4` deployed. You can use the PXE server VM that you created in the previous
-  step.
-
-### Procedure
+Follow the steps below to configure a PXE server:
 
 1. SSH into the PXE server VM:
 
     ```console
-    user:~/kubeflow-on-kvm$ ssh user@pxe-server
+    user:~/virtlml$ ssh user@pxe-server
     ```
 
-    > **Note**: Replace `user` with your username and `pxe-server` with the IP address of the PXE
-    > server VM.
+    ```{note}
+    Replace `user` with your username. Also, replace `pxe-server` with the IP address of the VM.
+    Alternatively, you can add an entry to your `/etc/hosts` file with the IP address and hostname
+    of the VM.
+    ```
 
 1. Change to root user:
 
@@ -235,7 +116,7 @@ network and install Debian `12.4` on it.
     a. Run the following command:
 
     ```console
-    root@pxe-server:/etc/dnsmasq.d# j2r > kubeflow-on-kvm.conf
+    root@pxe-server:/etc/dnsmasq.d# j2r > virtlml.conf
     ```
 
     b. Copy and paste the following text:
@@ -260,7 +141,7 @@ network and install Debian `12.4` on it.
     c. Run `CTRL + D` to exit.
 
     <!-- ```console
-    root@pxe-server:/etc/dnsmasq.d# j2r > kubeflow-on-kvm.conf <<EOF
+    root@pxe-server:/etc/dnsmasq.d# j2r > virtlml.conf <<EOF
     > # DNS: Disable
     > port=0
     > 
@@ -300,9 +181,11 @@ network and install Debian `12.4` on it.
     > EOF
     ``` -->
 
-    > **Note**: You will later set the `{{ MAC_ADDRESS }}` with the MAC address of the machine you
-    > want to boot, and assign the hostname and IP address you want via the corresponding
-    > environment variables (i.e., CLIENT_HOSTNAME, CLIENT_IP).
+    ```{note}
+    You will later set the `{{ MAC_ADDRESS }}` with the MAC address of the machine you want to boot,
+    and assign the hostname and IP address you want via the corresponding environment variables
+    (i.e., CLIENT_HOSTNAME, CLIENT_IP).
+    ```
 
 1. Restart the `dnsmasq` service:
 
@@ -314,7 +197,7 @@ network and install Debian `12.4` on it.
 
     ```console
     root@pxe-server:/etc/dnsmasq.d# exit
-    user:~/kubeflow-on-kvm$
+    user:~/virtlml$
     ```
 
 1. Change the `grub.cfg` file to choose the "Automated Install" option by default, and pull the
@@ -324,7 +207,9 @@ network and install Debian `12.4` on it.
     root@pxe-server:/srv/tftp# EXPORT PXE_SERVER="192.168.122.16"
     ```
 
-    > **Note**: Replace the `PXE_SERVER` IP value with your PXE server IP address.
+    ```{note}
+    Replace the `PXE_SERVER` IP value with your PXE server IP address.
+    ```
 
     ```console
     root@pxe-server:/srv/tftp# j2 infra/grub.cfg.j2 > infra/grub.cfg
@@ -333,7 +218,10 @@ network and install Debian `12.4` on it.
     ```console
     root@pxe-server:/srv/tftp# scp infra/grub.cfg root@pxe-server:/srv/tftp/debian-installer/amd64/grub/grub.cfg
     ```
-### Verify
+
+## Verify
+
+Verify that the `dnsmasq` service is running and serving files over TFTP:
 
 1. Ensure that the `dnsmasq` service is running:
 

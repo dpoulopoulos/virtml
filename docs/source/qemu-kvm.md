@@ -1,20 +1,29 @@
 # Install QEMU/KVM on Debian/Ubuntu
 
-This guide will walk you through the installation of QEMU/KVM on a Debian-based system.
-[QEMU](https://www.qemu.org/) is a generic and open source machine emulator and virtualizer, which
-allows for the emulation of various hardware platforms.
+This guide walks you through installing QEMU/KVM on a Debian-based system. [QEMU](https://www.qemu.org/)
+is a generic and open source machine emulator and virtualizer, which allows for the emulation of
+various hardware platforms.
 
 [KVM (Kernel-based Virtual Machine)](https://linux-kvm.org/page/Main_Page) is a virtualization
 module in the Linux kernel that allows the kernel to function as a hypervisor, enabling the running
-of multiple, isolated virtual environments known as virtual machines (VMs).
+of multiple, isolated virtual environments.
 
 ## What you'll need
 
+Το complete this guide, you will need the following:
+
 * A Debian-based system.
 
-> 🔵 This guide has been tested with Debian 12 (Bookworm).
+```{note}
+This project is tested on Debian 12 (Bookworm). It should work on other Debian-based distributions
+but it will require some modifications. We also plan to support Rocky Linux in the future.
+```
 
 ## Procedure
+
+Follow the steps below to install QEMU/KVM on your Debian-based system. The steps check if your CPU
+supports virtualization technology, install the required packages, and enable the `libvirtd`
+virtualization daemon.
 
 1. Change to root user:
 
@@ -23,14 +32,13 @@ of multiple, isolated virtual environments known as virtual machines (VMs).
     root:~#
     ```
 
-1. Check if your CPU supports virtualization technology:
+1. Check if your CPU supports virtualization technology. If Virtualization is supported, the output
+   should be greater than `0`:
 
     ```console
     root:~# egrep -c '(vmx|svm)' /proc/cpuinfo
     56
     ```
-
-    If Virtualization is supported, the output should be greater than `0`.
 
 1. Check if KVM virtualization is supported:
 
@@ -40,15 +48,13 @@ of multiple, isolated virtual environments known as virtual machines (VMs).
     KVM acceleration can be used
     ```
 
-    <details>
-    <summary> 🔴 Troubleshoot</summary>
-    
+    ```{warning}
+
     If the `kvm-ok` utility is missing, install the `cpu-checker` package:
 
     ```console
     root:~# apt update && apt install -y cpu-checker
     ```
-    </details>
 
 1. Install QEMU/KVM and other required packages:
 
@@ -93,6 +99,9 @@ of multiple, isolated virtual environments known as virtual machines (VMs).
     ```
 
 ## Verify
+
+Follow the steps below to verify that QEMU/KVM is correctly installed on your system, and launch the
+Virtual Machine Manager desktop application:
 
 1. Verify that the `libvirtd` service is running:
 

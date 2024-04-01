@@ -149,3 +149,12 @@ d-i grub-installer/bootdev  string /dev/vda
 ### Finishing up the installation
 # Avoid that last message about the install being complete.
 d-i finish-install/reboot_in_progress note
+
+# This command is run just before the install finishes, but when there is
+# still a usable /target directory.
+# Authorize the SSH key for root.
+d-i preseed/late_command string in-target mkdir -p /root/.ssh; \
+in-target /bin/sh -c "echo '{{ SSH_KEY }}' >> /root/.ssh/authorized_keys"; \
+in-target chown -R root:root /root/.ssh/; \
+in-target chmod 644 /root/.ssh/authorized_keys; \
+in-target chmod 700 /root/.ssh/
