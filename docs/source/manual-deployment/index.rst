@@ -22,3 +22,4 @@ automate the Debian installation process using a preseed file.
    pxe-server
    debian-preseed
    kubernetes
+   kubeflow
