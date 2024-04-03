@@ -1,5 +1,5 @@
 <domain type="kvm">
-  <name>worker</name>
+  <name>node1</name>
   <vcpu current="8">8</vcpu>
   <memory>33554432</memory>
   <os>
@@ -18,7 +18,7 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type="file" device="disk">
       <driver name="qemu" type="qcow2"/>
-      <source file="/var/lib/libvirt/images/worker.qcow2"/>
+      <source file="/var/lib/libvirt/images/node1.qcow2"/>
       <target dev="vda" bus="virtio"/>
       <boot order="1"/>
     </disk>

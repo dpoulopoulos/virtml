@@ -31,29 +31,29 @@ Follow the steps below to define a new VM:
 1. Navigate to the project's root directory:
 
     ```console
-    root:~# cd /home/user/virtlml
+    root:~# cd /home/user/virtml
     ```
 
     ```{note}
-    Replace `/home/user/virtlml` with the path to your project's root directory.
+    Replace `/home/user/virtml` with the path to your project's root directory.
     ```
 
 1. Create a new `QCOW2` virtual disk for the VM:
 
     ```console
-    root:/home/user/virtlml# qemu-img create -f qcow2 /var/lib/libvirt/images/worker.qcow2 96G
-    Formatting '/var/lib/libvirt/images/worker.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=103079215104 lazy_refcounts=off refcount_bits=16
+    root:/home/user/virtml# qemu-img create -f qcow2 /var/lib/libvirt/images/node1.qcow2 96G
+    Formatting '/var/lib/libvirt/images/node1.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=103079215104 lazy_refcounts=off refcount_bits=16
     ```
 
 1. Define a new VM, using the XML file inside the `infra` directory:
 
     ```console
-    root:/home/user/virtlml# virsh define --file infra/worker.xml
-    Domain 'worker' defined from worker.xml
+    root:/home/user/virtml# virsh define --file infra/node1.xml
+    Domain 'node1' defined from node1.xml
     ```
 
     ```{note}
-    The `worker.xml` file is a template for the VM. You can modify it to fit your needs. Pay close
+    The `node1.xml` file is a template for the VM. You can modify it to fit your needs. Pay close
     attention to the sections where you specify the path to the `QCOW2` file.
     ```
 
@@ -64,11 +64,11 @@ Verify that the VM has been defined correctly and is in the `shut off` state:
 1. List the VMs you have defined:
 
     ```console
-    root:/home/user/virtlml# virsh list --all
+    root:/home/user/virtml# virsh list --all
     Id   Name         State
     -----------------------------
     1    pxe-server   running
-    -    worker       shut off
+    -    node1        shut off
     ```
 
 ## Step 2: Configure the PXE Server
@@ -87,42 +87,42 @@ To complete this guide, you will need the following:
 1. Change back to your user:
 
     ```console
-    root:/home/user/virtlml# exit
+    root:/home/user/virtml# exit
     user:~$
     ```
 
 1. Navigate to your project's directory:
 
     ```console
-    user:~$ cd virtlml
+    user:~$ cd virtml
     ```
 
     ```{note}
-    Replace `virtlml` with the path to your project's root directory.
+    Replace `virtml` with the path to your project's root directory.
     ```
 
 1. Decide on login credentials for the `root` user of new worker VM:
 
     ```console
-    user:~/virtlml$ export ROOTPW_HASH=$(openssl passwd -6)
+    user:~/virtml$ export ROOTPW_HASH=$(openssl passwd -6)
     ```
 
 1. Export your public SSH key:
 
     ```console
-    user:~/virtlml$ export SSH_KEY=$(cat ~/.ssh/id_rsa.pub)
+    user:~/virtml$ export SSH_KEY=$(cat ~/.ssh/id_rsa.pub)
     ```
 
 1. Render the preseed file:
 
     ```console
-    user:~/virtlml$ j2 infra/preseed.cfg.j2 > preseed.cfg
+    user:~/virtml$ j2 infra/preseed.cfg.j2 > preseed.cfg
     ```
 
 1. Copy the preseed file onto the PXE Server:
 
     ```console
-    user:~/virtlml$ scp preseed.cfg root@pxe-server:/srv/tftp/preseed.cfg
+    user:~/virtml$ scp preseed.cfg root@pxe-server:/srv/tftp/preseed.cfg
     ```
 
 1. Decide on the IP address and the hostname of the worker VM:
@@ -130,41 +130,37 @@ To complete this guide, you will need the following:
     a. Set the VM's IP address:
 
     ```console
-    user:~/virtlml$ export CLIENT_IP=192.168.1.16
+    user:~/virtml$ export CLIENT_IP=192.168.1.16
     ```
 
     b. Set the VM's MAC address:
 
     ```console
-    user:~/virtlml$ export CLIENT_MAC=$(virsh dumpxml worker | grep "<mac address=" | awk -F"'" '{print $2}')
+    user:~/virtml$ export CLIENT_MAC=$(sudo virsh dumpxml node1 | grep "<mac address=" | awk -F"'" '{print $2}')
     ```
 
     c. Set the VM's hostname:
 
     ```console
-    user:~/virtlml$ export CLIENT_HOSTNAME=worker
+    user:~/virtml$ export CLIENT_HOSTNAME=node1
     ```
 
 1. Render the `dnsmasq` configuration:
 
     ```console
-    user:~/virtlml$ j2 infra/dnsmasq.conf.j2 > dnsmasq.conf-01-${CLIENT_MAC//:/-}
+    user:~/virtml$ j2 infra/dnsmasq.conf.j2 > dnsmasq.conf-01-${CLIENT_MAC//:/-}
     ```
 
 1. Copy the configuration file onto the PXE Server:
 
     ```console
-    user:~/virtlml$ scp dnsmasq.conf-01-<CLIENT_MAC> root@pxe-server:/etc/dnsmasq.d/dnsmasq.conf-<CLIENT_MAC>
-    ```
-
-    ```{note}
-    The `<CLIENT_MAC>` suffix is the MAC address of the worker VM.
+    user:~/virtml$ scp dnsmasq.conf-01-${CLIENT_MAC//:/-} root@pxe-server:/etc/dnsmasq.d/dnsmasq.conf-01-${CLIENT_MAC//:/-}
     ```
 
 1. SSH into the PXE server VM:
 
     ```console
-    user:~/virtlml$ ssh user@pxe-server
+    user:~/virtml$ ssh user@pxe-server
     ```
 
     ```{note}
@@ -214,8 +210,8 @@ Debian automatically.
 1. Start the worker VM:
 
     ```console
-    root:~# virsh start worker
-    Domain 'worker' started
+    root:~# virsh start node1
+    Domain 'node1' started
     ```
 
 ### Verify
@@ -224,5 +220,5 @@ Debian automatically.
    installer automatically installs the OS, without any human intervention.
 
     ```console
-    root:/home/user/virtlml# virt-manager
+    root:/home/user/virtml# virt-manager
     ```
