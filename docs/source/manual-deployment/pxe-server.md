@@ -159,34 +159,6 @@ Follow the steps below to configure a PXE server:
     > EOF
     ``` -->
 
-1. Create a template for `dnsmaq` to respond to individual DHCP requests:
-
-    a. Run the following command:
-
-    ```console
-    root@pxe-server:/etc/dnsmasq.d# cat > .template.j2
-    ```
-
-    a. Copy and paste the following text:
-
-    ```
-    dhcp-host={{ CLIENT_MAC }},{{ CLIENT_HOSTNAME }},{{ CLIENT_IP }}
-    ```
-    
-    a. Run `CTRL + D` to exit.
-
-    <!-- ```console
-    root@pxe-server:/etc/dnsmasq.d# cat > .template.j2 <<EOF
-    > dhcp-host={{ CLIENT_MAC }},{{ CLIENT_HOSTNAME }},{{ CLIENT_IP }}
-    > EOF
-    ``` -->
-
-    ```{note}
-    You will later set the `{{ MAC_ADDRESS }}` with the MAC address of the machine you want to boot,
-    and assign the hostname and IP address you want via the corresponding environment variables
-    (i.e., CLIENT_HOSTNAME, CLIENT_IP).
-    ```
-
 1. Restart the `dnsmasq` service:
 
     ```console
@@ -200,11 +172,10 @@ Follow the steps below to configure a PXE server:
     user:~/virtlml$
     ```
 
-1. Change the `grub.cfg` file to choose the "Automated Install" option by default, and pull the
-   preseed file from the network:
+1. Change the `grub.cfg` file to choose the "Automated Install" option by default:
 
     ```console
-    root@pxe-server:/srv/tftp# EXPORT PXE_SERVER="192.168.122.16"
+    user:~/virtlml$ EXPORT PXE_SERVER="192.168.122.16"
     ```
 
     ```{note}
@@ -212,16 +183,29 @@ Follow the steps below to configure a PXE server:
     ```
 
     ```console
-    root@pxe-server:/srv/tftp# j2 infra/grub.cfg.j2 > infra/grub.cfg
+    user:~/virtlml$ j2 infra/grub.cfg.j2 > infra/grub.cfg
     ```
 
     ```console
-    root@pxe-server:/srv/tftp# scp infra/grub.cfg root@pxe-server:/srv/tftp/debian-installer/amd64/grub/grub.cfg
+    user:~/virtlml$ scp infra/grub.cfg root@pxe-server:/srv/tftp/debian-installer/amd64/grub/grub.cfg
     ```
 
 ## Verify
 
 Verify that the `dnsmasq` service is running and serving files over TFTP:
+
+1. SSH into the PXE server VM:
+
+    ```console
+    user:~/virtlml$ ssh user@pxe-server
+    ```
+
+1. Change to root user:
+
+    ```console
+    user@pxe-server:~$ sudo su -
+    root@pxe-server:~#
+    ```
 
 1. Ensure that the `dnsmasq` service is running:
 
