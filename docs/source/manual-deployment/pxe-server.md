@@ -7,7 +7,7 @@ the same network and install Debian `12.4` on it.
 
 To complete this guide, you will need the following:
 
-* A VM with [Debian `12.4`](debian-vm) installed.
+* A VM with [Debian `12.4`](../debian-vm) installed.
 
 ## Procedure
 
