@@ -125,6 +125,7 @@ To verify that Longhorn is running, run the following commands:
     user:~/virtlml$ kubectl port-forward -n longhorn-system svc/longhorn-frontend 8080:80
     ```
 
-    Open a web browser and navigate to `http://localhost:8080`. You should see the Longhorn UI:
+    Open a web browser and navigate to [http://localhost:8080](http://localhost:8080). You should
+    see the Longhorn UI:
 
     ![Longhorn UI](images/longhorn-ui.png)
