@@ -12,18 +12,52 @@ To complete this guide, you'll need the following:
 
 ## Procedure
 
-To deploy Longhorn on a Kubernetes cluster, run the following command:
+Follow the steps below to deploy Longhorn on a Kubernetes cluster:.
 
-Deploy the Longhorn kustomization:
+### Step 1: Install Requirements
 
-```console
-user:~/virtlml$ kubectl apply -k manifests/longhorn/overlays/kubeflow
+Follow the steps below to install the required libraries on each Kubernetes node:
+
+1. SSH into each Kubernetes node:
+
+    ```console
+    user:~/virtlml$ ssh root@<node-ip>
+    ```
+
+    ```{note}
+    Replace `<node-ip>` with the IP address of the node.
+    ```
+
+1. Install the required libraries:
+
+    ```console
+    root@node1:~# apt update & apt install -y sudo jq
+    ```
+
+```{important}
+Repeat this process for each Kubernetes node.
 ```
 
-```{note}
-This command will deploy Longhorn on the Kubernetes cluster. It may take a few minutes for the
-deployment to complete.
-```
+### Step 2: Deploy Longhorn
+
+Follow the steps below to deploy Longhorn on the Kubernetes cluster:
+
+1. Return to your local environment:
+
+    ```console
+    root@node1:~# exit
+    ```
+
+1. Apply the Longhorn manifests:
+
+    ```console
+    user:~/virtlml$ kubectl apply -k manifests/longhorn/overlays/kubeflow
+    ```
+
+    ```{note}
+    This command will deploy Longhorn on the Kubernetes cluster. It may take a few minutes for the
+    deployment to complete.
+    ```
 
 ## Verify
 
