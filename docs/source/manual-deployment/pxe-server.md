@@ -47,7 +47,7 @@ Follow the steps below to configure a PXE server:
 1. Download the `netboot.tar.gz` file, which contains the network installer for Debian `12.4`:
 
     ```console
-    root@pxe-server:~# wget https://deb.debian.org/debian/dists/Debian12.4/main/installer-amd64/current/images/netboot/netboot.tar.gz
+    root@pxe-server:~# wget https://deb.debian.org/debian/dists/Debian12.5/main/installer-amd64/current/images/netboot/netboot.tar.gz
     ```
 
 1. Create a `tftp` directory to store the files that will be served by the TFTP server, and navigate
