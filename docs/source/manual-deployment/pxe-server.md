@@ -175,7 +175,7 @@ Follow the steps below to configure a PXE server:
 1. Change the `grub.cfg` file to choose the "Automated Install" option by default:
 
     ```console
-    user:~/virtlml$ EXPORT PXE_SERVER="192.168.122.16"
+    user:~/virtlml$ export PXE_SERVER="192.168.122.16"
     ```
 
     ```{note}
