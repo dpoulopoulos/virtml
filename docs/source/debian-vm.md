@@ -131,3 +131,9 @@ Follow the steps below to create a new VM and install Debian on it.
     ```{note}
     Replace `user` with your username and `pxe-server` with the IP address of the PXE server VM.
     ```
+
+    ```{important}
+    You should add your SSH public key to the authorized keys list of the root user on the PXE
+    server VM. This is something that you will need later, as you should be able to SSH into the
+    PXE server VM as the root user.
+    ```

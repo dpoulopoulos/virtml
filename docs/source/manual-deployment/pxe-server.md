@@ -197,14 +197,7 @@ Verify that the `dnsmasq` service is running and serving files over TFTP:
 1. SSH into the PXE server VM:
 
     ```console
-    user:~/virtlml$ ssh user@pxe-server
-    ```
-
-1. Change to root user:
-
-    ```console
-    user@pxe-server:~$ sudo su -
-    root@pxe-server:~#
+    user:~/virtlml$ ssh root@pxe-server
     ```
 
 1. Ensure that the `dnsmasq` service is running:

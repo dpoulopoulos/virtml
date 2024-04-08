@@ -160,20 +160,7 @@ To complete this guide, you will need the following:
 1. SSH into the PXE server VM:
 
     ```console
-    user:~/virtml$ ssh user@pxe-server
-    ```
-
-    ```{note}
-    Replace `user` with your username. Also, replace `pxe-server` with the IP address of the VM.
-    Alternatively, you can add an entry to your `/etc/hosts` file with the IP address and hostname
-    of the VM.
-    ```
-
-1. Change to root user:
-
-    ```console
-    user@pxe-server:~$ sudo su -
-    root@pxe-server:~#
+    user:~/virtml$ ssh root@pxe-server
     ```
 
 1. Restart the `dnsmasq` service:
