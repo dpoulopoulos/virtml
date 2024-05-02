@@ -40,7 +40,8 @@ Kubeflow using a manual approach, setting everything by hand. This is a great wa
 and outs of the process.
 
 🤖 **Automated Deployment**: Use Ansible playbooks to automate the deployment of a virtualized
-environment for Kubeflow. This is a great way to quickly get started with VirtML.
+environment for Kubeflow. This is a great way to quickly get started with VirtML. The automated
+deployment is still a work in progress, but it will be available soon.
 
 In any case, you should complete the core guides first, as they lay the foundation for either
 approach.
