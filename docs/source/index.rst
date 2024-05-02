@@ -59,13 +59,18 @@ approach.
 
    qemu-kvm
    virtml-admin
-   gpu-passthrough
 
 .. toctree::
    :maxdepth: 1
    :caption: Deployment Guides
 
    manual-deployment/index.rst
+
+.. toctree::
+   :maxdepth: 1
+   :caption: System Guides
+
+   gpu-passthrough
 
 Contact
 -------
