@@ -15,6 +15,8 @@ To complete this guide, you will need the following:
 
 * A running Kubernetes cluster. You can use the [Kubernetes cluster](kubernetes) you created in the
   previous section.
+* Longhorn installed on your Kubernetes cluster. You can install it by following the instructions in
+  the [previous section](longhorn).
 * Kustomize installed on your local machine. You can install it by following the instructions in the
   [official documentation](https://kubectl.docs.kubernetes.io/installation/kustomize/).
 
@@ -37,11 +39,11 @@ Follow the steps below to deploy Kubeflow on your Kubernetes cluster:
 1. Checkout a specific version of the Kubeflow manifests repository:
 
     ```console
-    user:~/manifests$ git checkout tags/v1.8.0
+    user:~/manifests$ git checkout tags/v1.8.1
     ```
 
     ```{note}
-    This documentation uses version 1.8.0 of the Kubeflow manifests. You can replace `v1.8.0` with
+    This documentation uses version `1.8.1` of the Kubeflow manifests. You can replace `v1.8.0` with
     the version you want to use.
     ```
 
