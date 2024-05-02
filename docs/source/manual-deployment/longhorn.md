@@ -31,7 +31,7 @@ Follow the steps below to install the required libraries on each Kubernetes node
 1. Install the required libraries:
 
     ```console
-    root@node1:~# apt update & apt install -y sudo jq
+    root@node1:~# apt update && apt install -y sudo jq
     ```
 
 ```{important}
@@ -63,7 +63,8 @@ Follow the steps below to deploy Longhorn on the Kubernetes cluster:
 
 To verify that Longhorn is running, run the following commands:
 
-1. Check that the Longhorn pods are running:
+1. Check that the Longhorn pods are running. This may take a few minutes, so don't worry if some
+   pods are in a failed state initially:
 
     ```console
     user:~/virtlml$ kubectl get pods -n longhorn-system
