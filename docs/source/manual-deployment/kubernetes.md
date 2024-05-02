@@ -1,7 +1,7 @@
 # Deploy Kubernetes
 
 In this section, you will learn how to deploy a Kubernetes cluster using [kubespray](https://github.com/kubernetes-sigs/kubespray).
-Now that you have a few VMs running, you can use them as targets for the Kubernetes cluster.
+Now that you have a few VMs running, you can use them as nodes for the Kubernetes cluster.
 
 Kubespray is a set of Ansible playbooks that you can use to deploy a Kubernetes cluster. It is
 designed to be used in a variety of environments, including bare metal, virtual machines, and cloud
@@ -12,7 +12,7 @@ machine.
 
 To complete this guide, you will need the following:
 
-* A set of running VMs. You can use the [VMs](debian-preseed) you created in the previous sections.
+* A set of running VMs. You can use the [VMs](node-deployment) you created in the previous sections.
 
 ## Procedure
 
@@ -24,10 +24,16 @@ Follow the steps below to deploy a Kubernetes cluster:
     user:~$ git clone https://github.com/kubernetes-sigs/kubespray.git
     ```
 
-1. Change to the kubespray directory:
+1. Navigate to the kubespray directory:
 
     ```console
     user:~$ cd kubespray
+    ```
+
+1. Install the Python requirements:
+
+    ```console
+    user:~/kubespray$ pip install -r requirements.txt
     ```
 
 1. Copy the `inventory/sample` file as `inventory/mycluster`:
@@ -39,7 +45,7 @@ Follow the steps below to deploy a Kubernetes cluster:
 1. Update the Ansible inventory file using the inventory builder script:
 
     ```console
-    user:~/kubespray$ declare -a IPS=(10.10.1.3 10.10.1.4 10.10.1.5 10.10.1.6)
+    user:~/kubespray$ declare -a IPS=(192.168.20.101 192.168.20.102 192.168.20.103 192.168.20.104 192.168.20.105)
     ```
 
     ```{note}
@@ -48,6 +54,13 @@ Follow the steps below to deploy a Kubernetes cluster:
 
     ```console
     user:~/kubespray$ CONFIG_FILE=inventory/mycluster/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
+    DEBUG: Adding group all
+    DEBUG: Adding group kube_control_plane
+    DEBUG: Adding group kube_node
+    DEBUG: Adding group etcd
+    DEBUG: Adding group k8s_cluster
+    DEBUG: Adding group calico_rr
+    ... (output omitted)
     ```
 
 1. Review and change parameters under `inventory/mycluster/group_vars`:
