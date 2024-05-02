@@ -62,7 +62,7 @@ approach.
    virtml-admin
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Deployment Guides
 
    manual-deployment/index.rst
