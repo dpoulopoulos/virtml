@@ -20,7 +20,7 @@ automate the Debian installation process using a preseed file.
    :maxdepth: 1
 
    pxe-server
-   debian-preseed
+   node-deployment
    kubernetes
    longhorn
    kubeflow

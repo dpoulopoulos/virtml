@@ -70,6 +70,26 @@ Follow the steps below to deploy a Kubernetes cluster:
     This command will deploy a Kubernetes cluster on the VMs you specified in the inventory file.
     ```
 
+1. Copy the `admin.conf` file to your local machine:
+
+    ```console
+    user:~/kubespray$ scp root@node1:/etc/kubernetes/admin.conf ~/.kube/config
+    ```
+
+    ```{note}
+    Replace `node1` with the IP address of the first node in your cluster.
+    ```
+
+1. Create an SSH tunnel to the Kubernetes API server:
+
+    ```console
+    user:~/kubespray$ ssh -L 6443:localhost:6443 root@node1
+    ```
+
+    ```{note}
+    Replace `node1` with the IP address of the first node in your cluster.
+    ```
+
 ## Verify
 
 Follow the steps below to verify the Kubernetes deployment:

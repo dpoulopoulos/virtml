@@ -16,6 +16,12 @@
   </cpu>
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
+    <serial type='pty'>
+      <target port='0'/>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
     <disk type="file" device="disk">
       <driver name="qemu" type="qcow2"/>
       <source file="/var/lib/libvirt/images/node1.qcow2"/>
@@ -23,12 +29,10 @@
       <boot order="1"/>
     </disk>
     <interface type="bridge">
-      <source bridge="virbr0"/>
-      <mac address="52:54:00:fd:b9:8b"/>
+      <source bridge="br0"/>
       <model type="virtio"/>
       <boot order="2"/>
       <rom bar="off"/>
     </interface>
-    <graphics type='spice' autoport='yes'/>
   </devices>
 </domain>

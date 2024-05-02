@@ -1,8 +1,8 @@
-# Deploy Debian on KVM
+# Create a Kubernetes Node
 
-This guide walks you through booting a VM from the network and installing Debian 12 (Bookworm),
+This guide walks you through booting a VM from the network and installing Debian `12.x` (Bookworm),
 using a PXE server. Moreover, you will learn how to use a [preseed](https://wiki.debian.org/DebianInstaller/Preseed)
-file to automate the installation of Debian 12 on any VM.
+file to automate the installation of Debian `12.x` on any VM.
 
 ## Step 1: Define the Worker VM
 
@@ -21,34 +21,17 @@ To complete this guide, you will need the following:
 
 Follow the steps below to define a new VM:
 
-1. Change to root user:
-
-    ```console
-    user:~$ sudo su -
-    root:~#
-    ```
-
-1. Navigate to the project's root directory:
-
-    ```console
-    root:~# cd /home/user/virtml
-    ```
-
-    ```{note}
-    Replace `/home/user/virtml` with the path to your project's root directory.
-    ```
-
 1. Create a new `QCOW2` virtual disk for the VM:
 
     ```console
-    root:/home/user/virtml# qemu-img create -f qcow2 /var/lib/libvirt/images/node1.qcow2 96G
+    user:~/virtml$ qemu-img create -f qcow2 /var/lib/libvirt/images/node1.qcow2 96G
     Formatting '/var/lib/libvirt/images/node1.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=103079215104 lazy_refcounts=off refcount_bits=16
     ```
 
 1. Define a new VM, using the XML file inside the `infra` directory:
 
     ```console
-    root:/home/user/virtml# virsh define --file infra/node1.xml
+    user:~/virtml$ virsh define --file infra/node1.xml
     Domain 'node1' defined from node1.xml
     ```
 
@@ -64,11 +47,11 @@ Verify that the VM has been defined correctly and is in the `shut off` state:
 1. List the VMs you have defined:
 
     ```console
-    root:/home/user/virtml# virsh list --all
-    Id   Name         State
+    user:~/virtml$ virsh list --all
+    Id   Name           State
     -----------------------------
-    1    pxe-server   running
-    -    node1        shut off
+    1    virtml-admin   running
+    -    node1          shut off
     ```
 
 ## Step 2: Configure the PXE Server
@@ -84,23 +67,6 @@ To complete this guide, you will need the following:
 
 ### Procedure
 
-1. Change back to your user:
-
-    ```console
-    root:/home/user/virtml# exit
-    user:~$
-    ```
-
-1. Navigate to your project's directory:
-
-    ```console
-    user:~$ cd virtml
-    ```
-
-    ```{note}
-    Replace `virtml` with the path to your project's root directory.
-    ```
-
 1. Decide on login credentials for the `root` user of new worker VM:
 
     ```console
@@ -113,16 +79,28 @@ To complete this guide, you will need the following:
     user:~/virtml$ export SSH_KEY=$(cat ~/.ssh/id_rsa.pub)
     ```
 
+1. Export the hostname of the node VM:
+
+    ```console
+    user:~/virtml$ export HOSTNAME=node1
+    ```
+
+1. Export the domain name of the node VM:
+
+    ```console
+    user:~/virtml$ export DOMAIN=example.com
+    ```
+
 1. Render the preseed file:
 
     ```console
-    user:~/virtml$ j2 infra/preseed.cfg.j2 > preseed.cfg
+    user:~/virtml$ j2 infra/k8s_preseed.cfg.j2 > infra/k8s_preseed.cfg
     ```
 
 1. Copy the preseed file onto the PXE Server:
 
     ```console
-    user:~/virtml$ scp preseed.cfg root@pxe-server:/srv/tftp/preseed.cfg
+    user:~/virtml$ scp infra/k8s_preseed.cfg root@virtml-admin:/srv/tftp/preseed.cfg
     ```
 
 1. Decide on the IP address and the hostname of the worker VM:
@@ -130,7 +108,7 @@ To complete this guide, you will need the following:
     a. Set the VM's IP address:
 
     ```console
-    user:~/virtml$ export CLIENT_IP=192.168.1.16
+    user:~/virtml$ export CLIENT_IP=192.168.20.101
     ```
 
     b. Set the VM's MAC address:
@@ -148,31 +126,31 @@ To complete this guide, you will need the following:
 1. Render the `dnsmasq` configuration:
 
     ```console
-    user:~/virtml$ j2 infra/dnsmasq.conf.j2 > dnsmasq.conf-01-${CLIENT_MAC//:/-}
+    user:~/virtml$ j2 infra/dnsmasq.conf.j2 > infra/dnsmasq.conf-01-${CLIENT_MAC//:/-}
     ```
 
 1. Copy the configuration file onto the PXE Server:
 
     ```console
-    user:~/virtml$ scp dnsmasq.conf-01-${CLIENT_MAC//:/-} root@pxe-server:/etc/dnsmasq.d/dnsmasq.conf-01-${CLIENT_MAC//:/-}
+    user:~/virtml$ scp infra/dnsmasq.conf-01-${CLIENT_MAC//:/-} root@virtml-admin:/etc/dnsmasq.d/dnsmasq.conf-01-${CLIENT_MAC//:/-}
     ```
 
 1. SSH into the PXE server VM:
 
     ```console
-    user:~/virtml$ ssh root@pxe-server
+    user:~/virtml$ ssh root@virtml-admin
     ```
 
 1. Restart the `dnsmasq` service:
 
     ```console
-    root@pxe-server:~# systemctl restart dnsmasq
+    root@virtml-admin:~# systemctl restart dnsmasq
     ```
 
 1. Log out the PXE Server:
 
     ```console
-    root@pxe-server:~# exit
+    root@virtml-admin:~# exit
     ```
 
 ## Step 3: Start the worker VM
@@ -187,25 +165,29 @@ Debian automatically.
 
 ### Procedure
 
-1. Change to root user:
-
-    ```console
-    user:~$ sudo su -
-    root:~#
-    ```
-
 1. Start the worker VM:
 
     ```console
-    root:~# virsh start node1
+    user:~/virtml$ virsh start node1
     Domain 'node1' started
     ```
 
 ### Verify
 
-1. Connect to the worker VM through the "Virtual Machine Manager" UI and watch as the Debian
-   installer automatically installs the OS, without any human intervention.
+1. Connect to the node1 through your terminal and watch as the Debian installer automatically
+   installs the OS, without any human intervention.
 
     ```console
-    root:/home/user/virtml# virt-manager
+    user:~/virtml$ virsh console node1
+    ```
+
+1. SSH into the node1 VM:
+
+    ```console
+    user:~/virtml$ ssh root@node1
+    ```
+
+    ```{note}
+    Replace `node1` with the IP address of the VM. Alternatively, you can set the hostname for the
+    VM in your `/etc/hosts` file.
     ```
