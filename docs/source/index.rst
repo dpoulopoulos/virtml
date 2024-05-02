@@ -58,8 +58,8 @@ approach.
    :caption: Core Guides
 
    qemu-kvm
+   virtml-admin
    gpu-passthrough
-   debian-vm
 
 .. toctree::
    :maxdepth: 1
