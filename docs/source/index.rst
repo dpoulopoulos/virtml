@@ -42,7 +42,7 @@ and outs of the process.
 🤖 **Automated Deployment**: Use Ansible playbooks to automate the deployment of a virtualized
 environment for Kubeflow. This is a great way to quickly get started with VirtML.
 
-In any case, you should follow complete the core guides first, as they lay the foundation for either
+In any case, you should complete the core guides first, as they lay the foundation for either
 approach.
 
 .. note::
