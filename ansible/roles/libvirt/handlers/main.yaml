@@ -1,3 +1,0 @@
----
-- name: Handle local inventory
-  import_tasks: inventory.yaml

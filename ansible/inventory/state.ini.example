@@ -1,5 +1,0 @@
-[all]
-node1 state=present
-node2 state=present
-node3 state=present
-node4 state=present

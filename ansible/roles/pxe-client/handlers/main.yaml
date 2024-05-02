@@ -1,2 +1,0 @@
-- name: Handle dnsmasq service
-  import_tasks: dnsmasq.yaml

@@ -1,3 +1,0 @@
----
-- name: Add a new node to the Kubernetes cluster
-  ansible.builtin.import_playbook: playbooks/add-k8s-node.yaml

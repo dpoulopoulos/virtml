@@ -1,3 +1,0 @@
----
-- name: Install Kubernetes with Kubespray
-  ansible.builtin.import_playbook: ../kubespray/playbooks/remove_node.yml

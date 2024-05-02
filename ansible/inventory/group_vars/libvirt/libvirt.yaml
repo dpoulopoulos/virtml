@@ -1,5 +1,0 @@
----
-# libvirt VM hardware defaults
-vm_vcpus: 4
-vm_ram_mb: 16384
-vm_disk_gb: 64

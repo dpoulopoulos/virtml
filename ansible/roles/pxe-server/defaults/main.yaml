@@ -1,8 +1,0 @@
----
-debian_version: 12.5
-libvirt_pool_dir: /var/lib/libvirt/images
-vm_name: pxe-server
-vm_vcpus: 2
-vm_ram_mb: 2048
-vm_net: virbr0
-net_type: bridge

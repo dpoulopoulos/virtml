@@ -1,3 +1,0 @@
----
-- name: Install Kubernetes with Kubespray
-  ansible.builtin.import_playbook: ../kubespray/playbooks/facts.yml

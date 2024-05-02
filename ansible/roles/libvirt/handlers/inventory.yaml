@@ -1,5 +1,0 @@
----
-- name: reload-inventory
-  ansible.builtin.meta: refresh_inventory
-  delegate_to: localhost
-  run_once: true
