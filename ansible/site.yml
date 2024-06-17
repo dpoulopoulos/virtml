@@ -1,0 +1,16 @@
+---
+- name: Ensure admin hosts are reachable
+  hosts: admin
+  roles:
+  - role: ping
+
+- name: Setup libvirt host
+  hosts: boogie
+  roles:
+  - role: libvirt-host
+
+- name: Create Virtual Machines
+  hosts: libvirt
+  gather_facts: false
+  roles:
+  - role: libvirt-domain
