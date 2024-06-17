@@ -1,0 +1,6 @@
+---
+- name: Configure host as libvirt host
+  tags:
+  - libvirt
+  - libvirt-host
+  ansible.builtin.import_tasks: host.yml
