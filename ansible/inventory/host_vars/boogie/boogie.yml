@@ -1,0 +1,5 @@
+# Ansible will SSH into managed machines as this user
+ansible_user: root
+
+# Local user on the control machine
+user: root
