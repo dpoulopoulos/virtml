@@ -1,0 +1,36 @@
+---
+# The main commands in the libvirt.virt community module are not idempotent:
+# https://docs.ansible.com/ansible/latest/collections/community/libvirt/virt_module.html#parameter-command
+# Trying to define a domain that has the same name with an already existing one
+# results in overwriting the existing domaim (e.g., changing its MAC address).
+# We neet to get a hold of the existing domains and define a new one only if
+# it does not already exists.
+- name: Get existing libvirt domains
+  community.libvirt.virt:
+    command: list_vms
+  delegate_to: '{{ virt_host }}'
+  # Since we know for sure this specific operation does not modify host state,
+  # and the libvirt.virt community module does not support check mode,
+  # let's assume check mode is off, for this specific task.
+  check_mode: false
+  register: virt_host_domains
+
+- name: Create a QCOW2 disk image if it does not already exist
+  delegate_to: '{{ virt_host }}'
+  ansible.builtin.command:
+    cmd: |
+      qemu-img create -f qcow2 {{ hostvars[virt_host].virt_pool_dir }}/{{ virt_domain_name }}.qcow2 {{ virt_domain_disk_gb }}G
+    creates: '{{ hostvars[virt_host].virt_pool_dir }}/{{ virt_domain_name }}.qcow2'
+
+- name: Define libvirt domain
+  delegate_to: '{{ virt_host }}'
+  community.libvirt.virt:
+    command: define
+    xml: '{{ lookup("template", "domain.xml.j2") }}'
+  when: virt_domain_name not in virt_host_domains.list_vms
+
+- name: Start domain
+  delegate_to: '{{ virt_host }}'
+  community.libvirt.virt:
+    name: "{{ virt_domain_name }}"
+    state: running

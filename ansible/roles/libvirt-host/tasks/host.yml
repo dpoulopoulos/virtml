@@ -1,0 +1,36 @@
+---
+- name: Set libvirt host-related facts
+  # We make sure to set this as a host var on the libvirt host itself,
+  # so we can then access this variable from other roles when we delegate
+  # actions, including from the "libvirt-domain" role.
+  ansible.builtin.set_fact:
+    virt_pool_dir: '{{ virt_pool_dir }}'
+
+# TODO: Support Red Hat-based distributions for libvirt hosts
+- name: 'Ensure required packages are installed (Debian)'
+  # Install multiple packages, see
+  # https://stackoverflow.com/questions/54944080/installing-multiple-packages-in-ansible
+  ansible.builtin.apt:
+    pkg:
+      # We use libvirt to orchestrate QEMU
+      - qemu-system-x86
+      - libvirt-daemon-system
+      # We use the community.libvirt.virt Ansible module in libvirt-domain
+      - python3-libvirt
+      - python3-lxml
+      # We use the qemu-img tool
+      - qemu-utils
+      # We assume all VMs boot over UEFI
+      - ovmf
+    update_cache: true
+    # Let's install the absolute minimum we need
+    install_recommends: false
+  when: 'ansible_os_family == "Debian"'
+
+- name: Confirm the libvirt pool directory exists
+  ansible.builtin.file:
+    path: '{{ virt_pool_dir }}'
+    state: directory
+    owner: root
+    group: root
+    mode: "0711"

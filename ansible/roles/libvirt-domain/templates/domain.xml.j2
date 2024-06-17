@@ -1,0 +1,33 @@
+<!-- See here for a full description of the domain XML format for libvirt -->
+<domain type="{{ virt_domain_type }}">
+  <name>{{ virt_domain_name }}</name>
+  <vcpu placement="static">{{ virt_domain_num_vcpus }}</vcpu>
+  <memory unit="MiB">{{ virt_domain_memory_mb }}</memory>
+  <os>
+    <type arch="{{ virt_domain_arch }}" machine="{{ virt_domain_machine_type }}">{{ virt_domain_os_type }}</type>
+    <loader readonly="yes" type="pflash">/usr/share/OVMF/OVMF_CODE_4M.fd</loader>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <vmport state="off"/>
+  </features>
+  <cpu mode="{{ virt_domain_cpu_mode }}"/>
+  <devices>
+    <emulator>/usr/bin/qemu-system-x86_64</emulator>
+    <disk type="file" device="disk">
+      <driver name="qemu" type="qcow2"/>
+      <source file="{{ hostvars[virt_host].virt_pool_dir }}/{{ virt_domain_name }}.qcow2"/>
+      <target dev="vda" bus="virtio"/>
+      <boot order="1"/>
+    </disk>
+    <interface type="{{ virt_domain_net_type }}">
+      <source {{ virt_domain_net_type }}="{{ virt_domain_net_bridge }}"/>
+      <mac address="{{ virt_domain_net_macaddress }}"/>
+      <model type="virtio"/>
+      <boot order="2"/>
+      <rom bar="off"/>
+    </interface>
+    <graphics type="vnc" autoport="yes" listen="0.0.0.0"/>
+  </devices>
+</domain>

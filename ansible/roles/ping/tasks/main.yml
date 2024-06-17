@@ -1,0 +1,11 @@
+---
+- name: Ensure the host is up and running
+  tags: ping
+  ansible.builtin.ping:
+
+- name: Fail if hostname does not match value specified in inventory
+  tags: ping
+  ansible.builtin.assert:
+    that: ansible_facts["hostname"] == inventory_hostname
+    fail_msg: 'Hostname as discovered by Ansible ({{ ansible_facts["hostname"] }}) does not match inventory hostname'
+    success_msg: Hostname as discovered by Ansible matches inventory hostname

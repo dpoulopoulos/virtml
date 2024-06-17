@@ -1,0 +1,6 @@
+---
+- name: Create/update new libvirt domain for host
+  tags:
+  - libvirt
+  - libvirt-domain
+  ansible.builtin.import_tasks: domain.yml

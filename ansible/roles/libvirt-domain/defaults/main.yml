@@ -1,0 +1,7 @@
+---
+virt_domain_type: kvm
+virt_domain_arch: x86_64
+virt_domain_machine_type: q35
+virt_domain_os_type: hvm
+virt_domain_cpu_mode: host-passthrough
+virt_domain_net_type: bridge
