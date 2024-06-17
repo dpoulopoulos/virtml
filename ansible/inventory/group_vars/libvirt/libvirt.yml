@@ -1,0 +1,6 @@
+---
+virt_host: boogie
+virt_domain_disk_gb: 128
+virt_domain_num_vcpus: 4
+virt_domain_memory_mb: 16384
+virt_domain_net_bridge: br0
