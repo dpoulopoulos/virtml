@@ -22,6 +22,24 @@
       qemu-img create -f qcow2 {{ hostvars[virt_host].virt_pool_dir }}/{{ virt_domain_name }}.qcow2 {{ virt_domain_disk_gb }}G
     creates: '{{ hostvars[virt_host].virt_pool_dir }}/{{ virt_domain_name }}.qcow2'
 
+- name: Get or create the MAC address variable
+  delegate_to: '{{ virt_host }}'
+  set_fact:
+    virt_domain_net_macaddress:
+      '{{ virt_domain_net_macaddress |
+          default("52:54:00" | community.general.random_mac) }}'
+
+- name: Store the MAC address in state.ini
+  delegate_to: localhost
+  throttle: 1
+  notify: reload-inventory
+  community.general.ini_file:
+    path: '{{ inventory_dir}}/state.ini'
+    section: libvirt
+    option: '{{ inventory_hostname }} virt_domain_net_macaddress'
+    value: '{{ virt_domain_net_macaddress }}'
+    no_extra_spaces: true
+
 - name: Define libvirt domain
   delegate_to: '{{ virt_host }}'
   community.libvirt.virt:
