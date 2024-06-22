@@ -1,0 +1,6 @@
+
+---
+- name: Perform common tasks for hosts
+  tags:
+  - common
+  ansible.builtin.import_tasks: common.yml
