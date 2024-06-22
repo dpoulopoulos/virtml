@@ -8,3 +8,9 @@ all-check:
 
 all:
 	ansible-playbook $(ANSIBLE_ARGS) $(ANSIBLE_DIFF) $(DEFAULT_ARGS) site.yml
+
+k8s-check:
+	ansible-playbook $(ANSIBLE_ARGS) $(ANSIBLE_DIFF) $(DEFAULT_ARGS) --check cluster.yml
+
+k8s:
+	ansible-playbook $(ANSIBLE_ARGS) $(ANSIBLE_DIFF) $(DEFAULT_ARGS) cluster.yml

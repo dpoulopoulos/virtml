@@ -1,0 +1,8 @@
+---
+- name: Setup the VMs
+  hosts: libvirt
+  roles:
+  - role: common
+
+- name: Create Kubernetes cluster using kubespray
+  ansible.builtin.import_playbook: kubespray/cluster.yml
