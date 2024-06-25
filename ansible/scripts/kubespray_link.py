@@ -11,6 +11,7 @@
 
 import os
 
+
 # Define the base source directory and destination directory
 base_source_dir = "./kubespray/inventory/sample/group_vars/"
 dest_dir = "./inventory/group_vars/"
