@@ -32,7 +32,7 @@
 - name: Store the MAC address in state.ini
   delegate_to: localhost
   throttle: 1
-  notify: reload-inventory 
+  notify: reload-inventory
   community.general.ini_file:
     path: '{{ inventory_dir}}/state.ini'
     section: libvirt
