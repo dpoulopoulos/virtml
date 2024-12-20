@@ -10,7 +10,7 @@
 <div align="center">
 
 [![License](https://img.shields.io/badge/license-apache%202.0-blue)](#license)
-[![Docs](https://img.shields.io/badge/docs-passing-green)](#docs)
+[![Docs](https://github.com/dpoulopoulos/virtml/actions/workflows/documentation.yaml/badge.svg)](https://github.com/dpoulopoulos/virtml/actions/workflows/documentation.yaml)
 [![Debian](https://img.shields.io/badge/debian-bookworm-red)](#debian)
 [![Kubeflow](https://img.shields.io/badge/kubeflow-v1.8-orange)](#kubeflow)
 [![Kubernetes](https://img.shields.io/badge/kubernetes-v1.29.3-orange)](#kubernetes)
@@ -20,8 +20,6 @@
 <h3 align="center">🚀 Efficiently deploy Kubeflow on VMs managed by KVM</h3>
 
 ---
-
-<br>
 
 Welcome to the VirtML project repository, your go-to resource for deploying Kubeflow on Virtual
 Machines (VMs) managed by Kernel-based Virtual Machine (KVM).
