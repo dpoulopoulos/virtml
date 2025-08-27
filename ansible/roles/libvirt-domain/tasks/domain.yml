@@ -47,6 +47,10 @@
     xml: '{{ lookup("template", "domain.xml.j2") }}'
   when: virt_domain_name not in virt_host_domains.list_vms
 
+- name: Setup DNS
+  ansible.builtin.pause:
+    prompt: "Please verify DNS is properly configured for {{ virt_domain_name }} and press ENTER to continue"
+
 - name: Start domain
   delegate_to: '{{ virt_host }}'
   community.libvirt.virt:
