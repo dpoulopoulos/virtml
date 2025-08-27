@@ -10,14 +10,19 @@
 # `group_vars` files from Kubespray.
 
 import os
+from pathlib import Path
 
 
 # Define the base source directory and destination directory
-base_source_dir = "./kubespray/inventory/sample/group_vars/"
-dest_dir = "./inventory/group_vars/"
+script_path = Path(__file__)
+repo_dir = script_path.parent.parent.parent  # Go up from scripts directory
+inventory_dir = repo_dir / "ansible" / "inventory"
+kubespray_dir = repo_dir / "ansible" / "kubespray"
+base_source_dir = kubespray_dir / "inventory" / "sample" / "group_vars"
+dest_dir = inventory_dir / "group_vars"
 
 
-def create_symlink(source_path: str, dest_path: str, filename: str) -> None:
+def create_symlink(source_path: Path, dest_path: Path, filename: str) -> None:
     """ Create a symlink for the given file in the destination directory.
 
     Args:
@@ -52,7 +57,7 @@ os.makedirs(dest_dir, exist_ok=True)
 
 # Handle files in the base directory separately
 for filename in os.listdir(base_source_dir):
-    source_file = os.path.join(base_source_dir, filename)
+    source_file = base_source_dir / filename
     if os.path.isfile(source_file):
         create_symlink(source_file, dest_dir, filename)
 
@@ -64,13 +69,12 @@ for dirpath, dirnames, filenames in os.walk(base_source_dir):
     subdir_name = os.path.basename(dirpath)
     if subdir_name == "all":
         subdir_name = "kubespray"
-    subdir_dest = os.path.join(dest_dir, subdir_name)
+    subdir_dest = dest_dir / subdir_name
     os.makedirs(subdir_dest, exist_ok=True)
 
     # Create symlinks for files in this directory
     for filename in filenames:
-        source_file = os.path.join(dirpath, filename)
+        source_file = Path(dirpath) / filename
         create_symlink(source_file, subdir_dest, filename)
 
 print("Symlinks creation process completed.")
-
