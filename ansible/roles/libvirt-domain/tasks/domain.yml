@@ -56,3 +56,4 @@
   community.libvirt.virt:
     name: "{{ virt_domain_name }}"
     state: running
+  when: not ansible_check_mode
