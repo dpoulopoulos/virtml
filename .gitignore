@@ -15,3 +15,6 @@ credentials
 # Python
 **/__pycache__/
 **/*.py[cod]
+
+# Ignore specific Ansible and directories
+**/inventory/**
