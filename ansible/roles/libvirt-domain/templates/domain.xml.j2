@@ -28,6 +28,15 @@
       <boot order="2"/>
       <rom bar="off"/>
     </interface>
-    <graphics type="vnc" autoport="yes" listen="0.0.0.0"/>
+    <serial type='pty'>
+      <target type='isa-serial' port='0'>
+        <model name='isa-serial'/>
+      </target>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
+    <input type='mouse' bus='ps2'/>
+    <input type='keyboard' bus='ps2'/>
   </devices>
 </domain>
