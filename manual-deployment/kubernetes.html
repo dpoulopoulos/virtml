@@ -1,0 +1,248 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deploy Kubernetes &mdash; VirtML 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Deploy Longhorn" href="longhorn.html" />
+    <link rel="prev" title="Create a Kubernetes Node" href="node-deployment.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            VirtML
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../qemu-kvm.html">Install QEMU and libvirt on Debian-based Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../virtml-admin.html">Create e VirtML Administrative VM</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment Guides</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Manual Deployment</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pxe-server.html">Configure a PXE server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node-deployment.html">Create a Kubernetes Node</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Deploy Kubernetes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-you-ll-need">What you’ll need</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#procedure">Procedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#verify">Verify</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="longhorn.html">Deploy Longhorn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kubeflow.html">Deploy Kubeflow</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">System Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gpu-passthrough.html">GPU Passthrough using VFIO</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">VirtML</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Manual Deployment</a></li>
+      <li class="breadcrumb-item active">Deploy Kubernetes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/manual-deployment/kubernetes.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="deploy-kubernetes">
+<h1>Deploy Kubernetes<a class="headerlink" href="#deploy-kubernetes" title="Link to this heading"></a></h1>
+<p>In this section, you will learn how to deploy a Kubernetes cluster using <a class="reference external" href="https://github.com/kubernetes-sigs/kubespray">kubespray</a>.
+Now that you have a few VMs running, you can use them as nodes for the Kubernetes cluster.</p>
+<p>Kubespray is a set of Ansible playbooks that you can use to deploy a Kubernetes cluster. It is
+designed to be used in a variety of environments, including bare metal, virtual machines, and cloud
+providers. In this case, you will use it to deploy a Kubernetes cluster on VMs running on your local
+machine.</p>
+<section id="what-you-ll-need">
+<h2>What you’ll need<a class="headerlink" href="#what-you-ll-need" title="Link to this heading"></a></h2>
+<p>To complete this guide, you will need the following:</p>
+<ul class="simple">
+<li><p>A set of running VMs. You can use the <a class="reference internal" href="node-deployment.html"><span class="doc std std-doc">VMs</span></a> you created in the previous sections.</p></li>
+</ul>
+</section>
+<section id="procedure">
+<h2>Procedure<a class="headerlink" href="#procedure" title="Link to this heading"></a></h2>
+<p>Follow the steps below to deploy a Kubernetes cluster:</p>
+<ol class="arabic">
+<li><p>Clone the kubespray repository:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/kubernetes-sigs/kubespray.git
+</pre></div>
+</div>
+</li>
+<li><p>Navigate to the kubespray directory:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~$ </span><span class="nb">cd</span><span class="w"> </span>kubespray
+</pre></div>
+</div>
+</li>
+<li><p>Install the Python requirements:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/kubespray$ </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+</li>
+<li><p>Copy the <code class="docutils literal notranslate"><span class="pre">inventory/sample</span></code> file as <code class="docutils literal notranslate"><span class="pre">inventory/mycluster</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/kubespray$ </span>cp<span class="w"> </span>-rfp<span class="w"> </span>inventory/sample<span class="w"> </span>inventory/mycluster
+</pre></div>
+</div>
+</li>
+<li><p>Update the Ansible inventory file using the inventory builder script:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/kubespray$ </span><span class="nb">declare</span><span class="w"> </span>-a<span class="w"> </span><span class="nv">IPS</span><span class="o">=(</span><span class="m">192</span>.168.20.101<span class="w"> </span><span class="m">192</span>.168.20.102<span class="w"> </span><span class="m">192</span>.168.20.103<span class="w"> </span><span class="m">192</span>.168.20.104<span class="w"> </span><span class="m">192</span>.168.20.105<span class="o">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Replace the IP addresses with the ones of your VMs.</p>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/kubespray$ </span><span class="nv">CONFIG_FILE</span><span class="o">=</span>inventory/mycluster/hosts.yaml<span class="w"> </span>python3<span class="w"> </span>contrib/inventory_builder/inventory.py<span class="w"> </span><span class="si">${</span><span class="nv">IPS</span><span class="p">[@]</span><span class="si">}</span>
+<span class="go">DEBUG: Adding group all</span>
+<span class="go">DEBUG: Adding group kube_control_plane</span>
+<span class="go">DEBUG: Adding group kube_node</span>
+<span class="go">DEBUG: Adding group etcd</span>
+<span class="go">DEBUG: Adding group k8s_cluster</span>
+<span class="go">DEBUG: Adding group calico_rr</span>
+<span class="go">... (output omitted)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Review and change parameters under <code class="docutils literal notranslate"><span class="pre">inventory/mycluster/group_vars</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/kubespray$ </span>cat<span class="w"> </span>inventory/mycluster/group_vars/all/all.yml
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/kubespray$ </span>cat<span class="w"> </span>inventory/mycluster/group_vars/k8s_cluster/k8s-cluster.yml
+</pre></div>
+</div>
+</li>
+<li><p>Deploy Kubespray with Ansible Playbook:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/kubespray$ </span>ansible-playbook<span class="w"> </span>-i<span class="w"> </span>inventory/mycluster/hosts.yaml<span class="w"> </span>--user<span class="o">=</span>root<span class="w"> </span>cluster.yml
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This command will deploy a Kubernetes cluster on the VMs you specified in the inventory file.</p>
+</div>
+</li>
+<li><p>Copy the <code class="docutils literal notranslate"><span class="pre">admin.conf</span></code> file to your local machine:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/kubespray$ </span>scp<span class="w"> </span>root@node1:/etc/kubernetes/admin.conf<span class="w"> </span>~/.kube/config
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">node1</span></code> with the IP address of the first node in your cluster.</p>
+</div>
+</li>
+<li><p>Create an SSH tunnel to the Kubernetes API server:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/kubespray$ </span>ssh<span class="w"> </span>-L<span class="w"> </span><span class="m">6443</span>:localhost:6443<span class="w"> </span>root@node1
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">node1</span></code> with the IP address of the first node in your cluster.</p>
+</div>
+</li>
+</ol>
+</section>
+<section id="verify">
+<h2>Verify<a class="headerlink" href="#verify" title="Link to this heading"></a></h2>
+<p>Follow the steps below to verify the Kubernetes deployment:</p>
+<ol class="arabic">
+<li><p>Verify that the Kubernetes cluster is up and running:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/kubespray$ </span>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
+<span class="go">NAME       STATUS   ROLES           AGE   VERSION</span>
+<span class="go">node1      Ready    control-plane   1m    v1.29.3</span>
+<span class="go">node2      Ready    control-plane   1m    v1.29.3</span>
+<span class="go">node3      Ready    &lt;none&gt;          1m    v1.29.3</span>
+<span class="go">node4      Ready    &lt;none&gt;          1m    v1.29.3</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The output should show the nodes in the cluster and their status. What you care about is that all
+nodes are <code class="docutils literal notranslate"><span class="pre">Ready</span></code>.</p>
+</div>
+</li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="node-deployment.html" class="btn btn-neutral float-left" title="Create a Kubernetes Node" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="longhorn.html" class="btn btn-neutral float-right" title="Deploy Longhorn" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Dimitris Poulopoulos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

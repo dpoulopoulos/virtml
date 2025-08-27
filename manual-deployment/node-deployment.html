@@ -1,0 +1,333 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create a Kubernetes Node &mdash; VirtML 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Deploy Kubernetes" href="kubernetes.html" />
+    <link rel="prev" title="Configure a PXE server" href="pxe-server.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            VirtML
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../qemu-kvm.html">Install QEMU and libvirt on Debian-based Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../virtml-admin.html">Create e VirtML Administrative VM</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment Guides</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Manual Deployment</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pxe-server.html">Configure a PXE server</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Create a Kubernetes Node</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-define-the-worker-vm">Step 1: Define the Worker VM</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-you-ll-need">What you’ll need</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#procedure">Procedure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#verify">Verify</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-configure-the-pxe-server">Step 2: Configure the PXE Server</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">What you’ll need</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Procedure</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-start-the-worker-vm">Step 3: Start the worker VM</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">What you’ll need</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">Procedure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">Verify</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kubernetes.html">Deploy Kubernetes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="longhorn.html">Deploy Longhorn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kubeflow.html">Deploy Kubeflow</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">System Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gpu-passthrough.html">GPU Passthrough using VFIO</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">VirtML</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Manual Deployment</a></li>
+      <li class="breadcrumb-item active">Create a Kubernetes Node</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/manual-deployment/node-deployment.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="create-a-kubernetes-node">
+<h1>Create a Kubernetes Node<a class="headerlink" href="#create-a-kubernetes-node" title="Link to this heading"></a></h1>
+<p>This guide walks you through booting a VM from the network and installing Debian <code class="docutils literal notranslate"><span class="pre">12.x</span></code> (Bookworm),
+using a PXE server. Moreover, you will learn how to use a <a class="reference external" href="https://wiki.debian.org/DebianInstaller/Preseed">preseed</a>
+file to automate the installation of Debian <code class="docutils literal notranslate"><span class="pre">12.x</span></code> on any VM.</p>
+<section id="step-1-define-the-worker-vm">
+<h2>Step 1: Define the Worker VM<a class="headerlink" href="#step-1-define-the-worker-vm" title="Link to this heading"></a></h2>
+<p>In this section, you define a new VM. We will use this as a use case. Then, you can deploy any VM
+you want to create a Kubernetes cluster (e.g., a control plane, another worker, etc.) using exactly
+the same process.</p>
+<section id="what-you-ll-need">
+<h3>What you’ll need<a class="headerlink" href="#what-you-ll-need" title="Link to this heading"></a></h3>
+<p>To complete this guide, you will need the following:</p>
+<ul class="simple">
+<li><p>A working <a class="reference internal" href="../qemu-kvm.html"><span class="doc std std-doc">QEMU/KVM installation</span></a>.</p></li>
+<li><p>A configured <a class="reference internal" href="pxe-server.html"><span class="doc std std-doc">PXE Server</span></a>.</p></li>
+</ul>
+</section>
+<section id="procedure">
+<h3>Procedure<a class="headerlink" href="#procedure" title="Link to this heading"></a></h3>
+<p>Follow the steps below to define a new VM:</p>
+<ol class="arabic">
+<li><p>Create a new <code class="docutils literal notranslate"><span class="pre">QCOW2</span></code> virtual disk for the VM:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>qemu-img<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>qcow2<span class="w"> </span>/var/lib/libvirt/images/node1.qcow2<span class="w"> </span>96G
+<span class="go">Formatting &#39;/var/lib/libvirt/images/node1.qcow2&#39;, fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=103079215104 lazy_refcounts=off refcount_bits=16</span>
+</pre></div>
+</div>
+</li>
+<li><p>Define a new VM, using the XML file inside the <code class="docutils literal notranslate"><span class="pre">infra</span></code> directory:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>virsh<span class="w"> </span>define<span class="w"> </span>--file<span class="w"> </span>infra/node1.xml
+<span class="go">Domain &#39;node1&#39; defined from node1.xml</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">node1.xml</span></code> file is a template for the VM. You can modify it to fit your needs. Pay close
+attention to the sections where you specify the path to the <code class="docutils literal notranslate"><span class="pre">QCOW2</span></code> file.</p>
+</div>
+</li>
+</ol>
+</section>
+<section id="verify">
+<h3>Verify<a class="headerlink" href="#verify" title="Link to this heading"></a></h3>
+<p>Verify that the VM has been defined correctly and is in the <code class="docutils literal notranslate"><span class="pre">shut</span> <span class="pre">off</span></code> state:</p>
+<ol class="arabic">
+<li><p>List the VMs you have defined:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>virsh<span class="w"> </span>list<span class="w"> </span>--all
+<span class="go">Id   Name           State</span>
+<span class="go">-----------------------------</span>
+<span class="go">1    virtml-admin   running</span>
+<span class="go">-    node1          shut off</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="step-2-configure-the-pxe-server">
+<h2>Step 2: Configure the PXE Server<a class="headerlink" href="#step-2-configure-the-pxe-server" title="Link to this heading"></a></h2>
+<p>In this section, you configure your PXE Server to repond to request from this specific VM. To
+achieve this, you use the MAC address of your newly created machine.</p>
+<section id="id1">
+<h3>What you’ll need<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>To complete this guide, you will need the following:</p>
+<ul class="simple">
+<li><p>A defined worker VM.</p></li>
+</ul>
+</section>
+<section id="id2">
+<h3>Procedure<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p>Decide on login credentials for the <code class="docutils literal notranslate"><span class="pre">root</span></code> user of new worker VM:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">ROOTPW_HASH</span><span class="o">=</span><span class="k">$(</span>openssl<span class="w"> </span>passwd<span class="w"> </span>-6<span class="k">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Export your public SSH key:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">SSH_KEY</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>~/.ssh/id_rsa.pub<span class="k">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Export the hostname of the node VM:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">HOSTNAME</span><span class="o">=</span>node1
+</pre></div>
+</div>
+</li>
+<li><p>Export the domain name of the node VM:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">DOMAIN</span><span class="o">=</span>example.com
+</pre></div>
+</div>
+</li>
+<li><p>Render the preseed file:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>j2<span class="w"> </span>infra/k8s_preseed.cfg.j2<span class="w"> </span>&gt;<span class="w"> </span>infra/k8s_preseed.cfg
+</pre></div>
+</div>
+</li>
+<li><p>Copy the preseed file onto the PXE Server:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>scp<span class="w"> </span>infra/k8s_preseed.cfg<span class="w"> </span>root@virtml-admin:/srv/tftp/preseed.cfg
+</pre></div>
+</div>
+</li>
+<li><p>Decide on the IP address and the hostname of the worker VM:</p>
+<p>a. Set the VM’s IP address:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_IP</span><span class="o">=</span><span class="m">192</span>.168.20.101
+</pre></div>
+</div>
+<p>b. Set the VM’s MAC address:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_MAC</span><span class="o">=</span><span class="k">$(</span>sudo<span class="w"> </span>virsh<span class="w"> </span>dumpxml<span class="w"> </span>node1<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;&lt;mac address=&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F<span class="s2">&quot;&#39;&quot;</span><span class="w"> </span><span class="s1">&#39;{print $2}&#39;</span><span class="k">)</span>
+</pre></div>
+</div>
+<p>c. Set the VM’s hostname:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_HOSTNAME</span><span class="o">=</span>node1
+</pre></div>
+</div>
+</li>
+<li><p>Render the <code class="docutils literal notranslate"><span class="pre">dnsmasq</span></code> configuration:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>j2<span class="w"> </span>infra/dnsmasq.conf.j2<span class="w"> </span>&gt;<span class="w"> </span>infra/dnsmasq.conf-01-<span class="si">${</span><span class="nv">CLIENT_MAC</span><span class="p">//:/-</span><span class="si">}</span>
+</pre></div>
+</div>
+</li>
+<li><p>Copy the configuration file onto the PXE Server:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>scp<span class="w"> </span>infra/dnsmasq.conf-01-<span class="si">${</span><span class="nv">CLIENT_MAC</span><span class="p">//:/-</span><span class="si">}</span><span class="w"> </span>root@virtml-admin:/etc/dnsmasq.d/dnsmasq.conf-01-<span class="si">${</span><span class="nv">CLIENT_MAC</span><span class="p">//:/-</span><span class="si">}</span>
+</pre></div>
+</div>
+</li>
+<li><p>SSH into the PXE server VM:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>ssh<span class="w"> </span>root@virtml-admin
+</pre></div>
+</div>
+</li>
+<li><p>Restart the <code class="docutils literal notranslate"><span class="pre">dnsmasq</span></code> service:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">root@virtml-admin:~# </span>systemctl<span class="w"> </span>restart<span class="w"> </span>dnsmasq
+</pre></div>
+</div>
+</li>
+<li><p>Log out the PXE Server:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">root@virtml-admin:~# </span><span class="nb">exit</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="step-3-start-the-worker-vm">
+<h2>Step 3: Start the worker VM<a class="headerlink" href="#step-3-start-the-worker-vm" title="Link to this heading"></a></h2>
+<p>In this final section, you start the worker VM and watch as it boots from the network and installs
+Debian automatically.</p>
+<section id="id3">
+<h3>What you’ll need<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>A defined worker VM.</p></li>
+<li><p>A configured PXE Server, ready to respond to DHCP discover requests from a spcific MAC address.</p></li>
+</ul>
+</section>
+<section id="id4">
+<h3>Procedure<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p>Start the worker VM:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>virsh<span class="w"> </span>start<span class="w"> </span>node1
+<span class="go">Domain &#39;node1&#39; started</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="id5">
+<h3>Verify<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p>Connect to the node1 through your terminal and watch as the Debian installer automatically
+installs the OS, without any human intervention.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>virsh<span class="w"> </span>console<span class="w"> </span>node1
+</pre></div>
+</div>
+</li>
+<li><p>SSH into the node1 VM:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>ssh<span class="w"> </span>root@node1
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">node1</span></code> with the IP address of the VM. Alternatively, you can set the hostname for the
+VM in your <code class="docutils literal notranslate"><span class="pre">/etc/hosts</span></code> file.</p>
+</div>
+</li>
+</ol>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pxe-server.html" class="btn btn-neutral float-left" title="Configure a PXE server" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kubernetes.html" class="btn btn-neutral float-right" title="Deploy Kubernetes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Dimitris Poulopoulos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

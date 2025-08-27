@@ -1,0 +1,299 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GPU Passthrough using VFIO &mdash; VirtML 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Deploy Kubeflow" href="manual-deployment/kubeflow.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            VirtML
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="qemu-kvm.html">Install QEMU and libvirt on Debian-based Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="virtml-admin.html">Create e VirtML Administrative VM</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="manual-deployment/index.html">Manual Deployment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">System Guides</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">GPU Passthrough using VFIO</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-you-ll-need">What you’ll need</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-set-your-primary-display-for-the-host">Step 1: Set your Primary Display for the Host</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">What you’ll need</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#procedure">Procedure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-enable-gpu-passthrough">Step 2: Enable GPU Passthrough</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">What you’ll need</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Procedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#verify">Verify</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">VirtML</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">GPU Passthrough using VFIO</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/gpu-passthrough.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="gpu-passthrough-using-vfio">
+<h1>GPU Passthrough using VFIO<a class="headerlink" href="#gpu-passthrough-using-vfio" title="Link to this heading"></a></h1>
+<p>This guide walks you througη the process of passing a GPU through to a Virtual Machine (VM), an
+essential step for setting up a VM to function as a Kubernetes GPU worker.</p>
+<section id="what-you-ll-need">
+<h2>What you’ll need<a class="headerlink" href="#what-you-ll-need" title="Link to this heading"></a></h2>
+<p>Το complete this guide, you will need the following:</p>
+<ul class="simple">
+<li><p>A Debian-based system.</p></li>
+<li><p>A working <a class="reference internal" href="qemu-kvm.html"><span class="doc std std-doc">QEMU/KVM installation</span></a>.</p></li>
+</ul>
+</section>
+<section id="step-1-set-your-primary-display-for-the-host">
+<h2>Step 1: Set your Primary Display for the Host<a class="headerlink" href="#step-1-set-your-primary-display-for-the-host" title="Link to this heading"></a></h2>
+<p>This step is essential for switching the primary display to the integrated GPU, thereby leaving the
+dedicated GPU available for use by the VM.</p>
+<section id="id1">
+<h3>What you’ll need<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>To complete this step, you will need:</p>
+<ul class="simple">
+<li><p>Access to the BIOS settings of the host machine.</p></li>
+</ul>
+</section>
+<section id="procedure">
+<h3>Procedure<a class="headerlink" href="#procedure" title="Link to this heading"></a></h3>
+<p>Follow the steps below to set the primary display for the host machine. The steps configure the X
+server to use the integrated GPU and set the primary display in the BIOS settings.</p>
+<!-- 1. Change to root user:
+
+    ```console
+    user:~$ sudo su -
+    root:~#
+    ``` -->
+<ol class="arabic">
+<li><p>Get the BusID of the integrated GPU by running the following command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go"> user:~/virtml$ lspci | grep VGA</span>
+<span class="go"> 00:02.0 VGA compatible controller: Intel Corporation Raptor Lake-S GT1 [UHD Graphics 770] (rev 04)</span>
+<span class="go"> 01:00.0 VGA compatible controller: NVIDIA Corporation GA106 [GeForce RTX 3060 Lite Hash Rate] (rev a1)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In this example, the BusID of the integrated GPU is <code class="docutils literal notranslate"><span class="pre">PCI:0:2:0</span></code>.</p>
+</div>
+</li>
+<li><p>Export the BusID in an environment variable:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">PCI_BUS_ID</span><span class="o">=</span><span class="s2">&quot;PCI:0:2:0&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Create the configuration file for the X server, using the provided template:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>j2<span class="w"> </span>infra/intel.conf.j2<span class="w"> </span>&gt;<span class="w"> </span>intel.conf
+</pre></div>
+</div>
+</li>
+<li><p>Copy the configuration file to the X server configuration directory:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>sudo<span class="w"> </span>cp<span class="w"> </span>intel.conf<span class="w"> </span>/etc/X11/xorg.conf.d/20-intel.conf
+</pre></div>
+</div>
+</li>
+<li><p>Change the ownership and the group of the configuration file to <code class="docutils literal notranslate"><span class="pre">root</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>sudo<span class="w"> </span>chown<span class="w"> </span>root:root<span class="w"> </span>/etc/X11/xorg.conf.d/20-intel.conf
+</pre></div>
+</div>
+</li>
+<li><p>Boot to UEFI/BIOS settings, and set the primary display to the integrated GPU. Look under
+“Advanced” settings, for an option like “Primary Display”. Set it to “Auto” and connect the
+monitor directly to the motherboard. Alternativelly, set it to “CPU” or “iGPU” if available.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>sudo<span class="w"> </span>systemctl<span class="w"> </span>reboot<span class="w"> </span>--firmware-setup
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="step-2-enable-gpu-passthrough">
+<h2>Step 2: Enable GPU Passthrough<a class="headerlink" href="#step-2-enable-gpu-passthrough" title="Link to this heading"></a></h2>
+<p>In this section, you will bind the GPU to the VFIO driver and prevent the Linux Kernel from loading
+the NVIDIA driver during boot.</p>
+<section id="id2">
+<h3>What you’ll need<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>To complete this step, you will need:</p>
+<ul class="simple">
+<li><p>A dedicated GPU that is not being used by the host.</p></li>
+</ul>
+</section>
+<section id="id3">
+<h3>Procedure<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>Follow the steps below to bind the GPU to the VFIO driver and prevent the Linux Kernel from loading
+the NVIDIA driver during boot.</p>
+<ol class="arabic">
+<li><p>Change to root user:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtml$ </span>sudo<span class="w"> </span>su<span class="w"> </span>-
+<span class="gp">root:~#</span>
+</pre></div>
+</div>
+</li>
+<li><p>Get the PCIe ID of the GPU:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">root:~# </span>lspci<span class="w"> </span>-nn<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>nvidia
+<span class="go">01:00.0 VGA compatible controller [0300]: NVIDIA Corporation GA106 [GeForce RTX 3060 Lite Hash Rate] [10de:2504] (rev a1)</span>
+<span class="go">01:00.1 Audio device [0403]: NVIDIA Corporation GA106 High Definition Audio Controller [10de:228e] (rev a1)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The PCIe ID of the VGA controller is <code class="docutils literal notranslate"><span class="pre">10de:2504</span></code> and the Audio device is <code class="docutils literal notranslate"><span class="pre">10de:228e</span></code>. Take a
+note of these IDs. You will need them later.</p>
+</div>
+</li>
+<li><p>Change the <code class="docutils literal notranslate"><span class="pre">GRUB_CMDLINE_LINUX_DEFAULT</span></code> variable in the <code class="docutils literal notranslate"><span class="pre">/etc/default/grub</span></code> file to include the
+following options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">intel_iommu=on</span></code>: Enable IOMMU for the integrated GPU.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">iommu=pt</span></code>: Enable IOMMU passthrough.</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">root:~# </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/GRUB_CMDLINE_LINUX_DEFAULT=&quot;\(.*\)&quot;/GRUB_CMDLINE_LINUX_DEFAULT=&quot;\1 intel_iommu=on iommu=pt&quot;/&#39;</span><span class="w"> </span>/etc/default/grub
+</pre></div>
+</div>
+</li>
+<li><p>Update the GRUB configuration:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">root:~# </span>update-grub
+</pre></div>
+</div>
+</li>
+<li><p>Create a configuration file to bind the GPU to the VFIO driver:</p>
+<p>a. Run the following command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">root:~# </span>cat<span class="w"> </span>&gt;<span class="w"> </span>/etc/modprobe.d/vfio.conf
+</pre></div>
+</div>
+<p>b. Copy and paste the following text:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">options</span> <span class="n">vfio</span><span class="o">-</span><span class="n">pci</span> <span class="n">ids</span><span class="o">=</span><span class="mi">10</span><span class="n">de</span><span class="p">:</span><span class="mi">2504</span><span class="p">,</span><span class="mi">10</span><span class="n">de</span><span class="p">:</span><span class="mi">228</span><span class="n">e</span>
+<span class="n">softdep</span> <span class="n">nvidia</span> <span class="n">pre</span><span class="p">:</span> <span class="n">vfio</span><span class="o">-</span><span class="n">pci</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">10de:2504,10de:228e</span></code> with the PCIe IDs of your GPU.</p>
+</div>
+<p>c. Run <code class="docutils literal notranslate"><span class="pre">CTRL</span> <span class="pre">+</span> <span class="pre">D</span></code> to exit.</p>
+</li>
+<li><p>Update the initial ramdisk:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">root:~# </span>update-initramfs<span class="w"> </span>-c<span class="w"> </span>-k<span class="w"> </span><span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Reboot the system:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">root:~# </span>reboot
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="verify">
+<h3>Verify<a class="headerlink" href="#verify" title="Link to this heading"></a></h3>
+<p>Verify that the GPU is bound to the VFIO driver:</p>
+<ol class="arabic">
+<li><p>Check if the GPU is bound to the VFIO driver:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">root:~# </span>lspci<span class="w"> </span>-k<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">&quot;vfio-pci|NVIDIA&quot;</span>
+<span class="go">01:00.0 VGA compatible controller: NVIDIA Corporation GA106 [GeForce RTX 3060 Lite Hash Rate] (rev a1)</span>
+<span class="go">    Kernel driver in use: vfio-pci</span>
+<span class="go">01:00.1 Audio device: NVIDIA Corporation GA106 High Definition Audio Controller (rev a1)</span>
+<span class="go">    Kernel driver in use: vfio-pci</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="manual-deployment/kubeflow.html" class="btn btn-neutral float-left" title="Deploy Kubeflow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Dimitris Poulopoulos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

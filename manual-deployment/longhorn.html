@@ -1,0 +1,267 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deploy Longhorn &mdash; VirtML 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Deploy Kubeflow" href="kubeflow.html" />
+    <link rel="prev" title="Deploy Kubernetes" href="kubernetes.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            VirtML
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../qemu-kvm.html">Install QEMU and libvirt on Debian-based Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../virtml-admin.html">Create e VirtML Administrative VM</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment Guides</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Manual Deployment</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pxe-server.html">Configure a PXE server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node-deployment.html">Create a Kubernetes Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kubernetes.html">Deploy Kubernetes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Deploy Longhorn</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-you-ll-need">What you’ll need</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#procedure">Procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-install-requirements">Step 1: Install Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-deploy-longhorn">Step 2: Deploy Longhorn</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#verify">Verify</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kubeflow.html">Deploy Kubeflow</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">System Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gpu-passthrough.html">GPU Passthrough using VFIO</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">VirtML</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Manual Deployment</a></li>
+      <li class="breadcrumb-item active">Deploy Longhorn</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/manual-deployment/longhorn.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="deploy-longhorn">
+<h1>Deploy Longhorn<a class="headerlink" href="#deploy-longhorn" title="Link to this heading"></a></h1>
+<p>This guide walks you through deploying Longhorn on a Kubernetes cluster. Longhorn is a distributed
+block storage system for Kubernetes that is built using containers. It provides features such as
+snapshots, backups, and volume expansion.</p>
+<section id="what-you-ll-need">
+<h2>What you’ll need<a class="headerlink" href="#what-you-ll-need" title="Link to this heading"></a></h2>
+<p>To complete this guide, you’ll need the following:</p>
+<ul class="simple">
+<li><p>A running <a class="reference internal" href="kubernetes.html"><span class="doc std std-doc">Kubernetes</span></a> cluster.</p></li>
+</ul>
+</section>
+<section id="procedure">
+<h2>Procedure<a class="headerlink" href="#procedure" title="Link to this heading"></a></h2>
+<p>Follow the steps below to deploy Longhorn on a Kubernetes cluster:.</p>
+<section id="step-1-install-requirements">
+<h3>Step 1: Install Requirements<a class="headerlink" href="#step-1-install-requirements" title="Link to this heading"></a></h3>
+<p>Follow the steps below to install the required libraries on each Kubernetes node:</p>
+<ol class="arabic">
+<li><p>SSH into each Kubernetes node:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtlml$ </span>ssh<span class="w"> </span>root@&lt;node-ip&gt;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">&lt;node-ip&gt;</span></code> with the IP address of the node.</p>
+</div>
+</li>
+<li><p>Install the required libraries:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">root@node1:~# </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>sudo<span class="w"> </span>jq
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Repeat this process for each Kubernetes node.</p>
+</div>
+</section>
+<section id="step-2-deploy-longhorn">
+<h3>Step 2: Deploy Longhorn<a class="headerlink" href="#step-2-deploy-longhorn" title="Link to this heading"></a></h3>
+<p>Follow the steps below to deploy Longhorn on the Kubernetes cluster:</p>
+<ol class="arabic">
+<li><p>Return to your local environment:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">root@node1:~# </span><span class="nb">exit</span>
+</pre></div>
+</div>
+</li>
+<li><p>Apply the Longhorn manifests:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtlml$ </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-k<span class="w"> </span>manifests/longhorn/overlays/kubeflow
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This command will deploy Longhorn on the Kubernetes cluster. It may take a few minutes for the
+deployment to complete.</p>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="verify">
+<h2>Verify<a class="headerlink" href="#verify" title="Link to this heading"></a></h2>
+<p>To verify that Longhorn is running, run the following commands:</p>
+<ol class="arabic">
+<li><p>Check that the Longhorn pods are running. This may take a few minutes, so don’t worry if some
+pods are in a failed state initially:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtlml$ </span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>longhorn-system
+<span class="go">csi-attacher-5c4bfdcf59-76dpt                       1/1     Running   0          6m34s</span>
+<span class="go">csi-attacher-5c4bfdcf59-zc96c                       1/1     Running   0          6m34s</span>
+<span class="go">csi-attacher-5c4bfdcf59-zpcrd                       1/1     Running   0          6m34s</span>
+<span class="go">csi-provisioner-667796df57-l4bvn                    1/1     Running   0          6m34s</span>
+<span class="go">csi-provisioner-667796df57-tn5mt                    1/1     Running   0          6m34s</span>
+<span class="go">csi-provisioner-667796df57-wr9gz                    1/1     Running   0          6m34s</span>
+<span class="go">csi-resizer-694f8f5f64-krdwn                        1/1     Running   0          6m34s</span>
+<span class="go">csi-resizer-694f8f5f64-q7r64                        1/1     Running   0          6m34s</span>
+<span class="go">csi-resizer-694f8f5f64-st9vb                        1/1     Running   0          6m34s</span>
+<span class="go">csi-snapshotter-959b69d4b-2trb4                     1/1     Running   0          6m34s</span>
+<span class="go">csi-snapshotter-959b69d4b-44bdw                     1/1     Running   0          6m34s</span>
+<span class="go">csi-snapshotter-959b69d4b-nmxxz                     1/1     Running   0          6m34s</span>
+<span class="go">engine-image-ei-5cefaf2b-2cpx5                      1/1     Running   0          6m40s</span>
+<span class="go">engine-image-ei-5cefaf2b-5kkpx                      1/1     Running   0          6m40s</span>
+<span class="go">engine-image-ei-5cefaf2b-6lw22                      1/1     Running   0          6m40s</span>
+<span class="go">engine-image-ei-5cefaf2b-7tj7g                      1/1     Running   0          6m40s</span>
+<span class="go">engine-image-ei-5cefaf2b-bmbxl                      1/1     Running   0          6m40s</span>
+<span class="go">instance-manager-143975653f867415efd89c7528bfdfd9   1/1     Running   0          6m39s</span>
+<span class="go">instance-manager-931660a4d81395a5ee4a44842096109a   1/1     Running   0          6m40s</span>
+<span class="go">instance-manager-d7ddfb2f3c3853b122fcc734777e3447   1/1     Running   0          6m39s</span>
+<span class="go">instance-manager-e3d1d6988014e64b4f12d6d513f72715   1/1     Running   0          6m40s</span>
+<span class="go">instance-manager-e58918fd8369607e8bff43f3856618be   1/1     Running   0          6m39s</span>
+<span class="go">longhorn-csi-plugin-8twkq                           3/3     Running   0          6m34s</span>
+<span class="go">longhorn-csi-plugin-cq6pw                           3/3     Running   0          6m34s</span>
+<span class="go">longhorn-csi-plugin-fvf6p                           3/3     Running   0          6m34s</span>
+<span class="go">longhorn-csi-plugin-rwgg9                           3/3     Running   0          6m34s</span>
+<span class="go">longhorn-csi-plugin-xzrlt                           3/3     Running   0          6m34s</span>
+<span class="go">longhorn-driver-deployer-7449f56699-h52tj           1/1     Running   0          6m47s</span>
+<span class="go">longhorn-iscsi-installation-2jgww                   1/1     Running   0          6m47s</span>
+<span class="go">longhorn-iscsi-installation-6p9f8                   1/1     Running   0          6m47s</span>
+<span class="go">longhorn-iscsi-installation-r8bbc                   1/1     Running   0          6m47s</span>
+<span class="go">longhorn-iscsi-installation-v9pz2                   1/1     Running   0          6m47s</span>
+<span class="go">longhorn-iscsi-installation-vwphj                   1/1     Running   0          6m47s</span>
+<span class="go">longhorn-manager-4k2hl                              1/1     Running   0          6m47s</span>
+<span class="go">longhorn-manager-4zvhw                              1/1     Running   0          6m47s</span>
+<span class="go">longhorn-manager-7p99c                              1/1     Running   0          6m47s</span>
+<span class="go">longhorn-manager-96rnf                              1/1     Running   0          6m47s</span>
+<span class="go">longhorn-manager-rxfr6                              1/1     Running   0          6m47s</span>
+<span class="go">longhorn-nfs-installation-4h9qq                     1/1     Running   0          6m47s</span>
+<span class="go">longhorn-nfs-installation-7d847                     1/1     Running   0          6m47s</span>
+<span class="go">longhorn-nfs-installation-9krbq                     1/1     Running   0          6m47s</span>
+<span class="go">longhorn-nfs-installation-bt4x2                     1/1     Running   0          6m47s</span>
+<span class="go">longhorn-nfs-installation-pggtb                     1/1     Running   0          6m47s</span>
+<span class="go">longhorn-ui-6c8c4fcbb8-2p7ld                        1/1     Running   0          6m47s</span>
+<span class="go">longhorn-ui-6c8c4fcbb8-fhrbh                        1/1     Running   0          6m47s</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This command will list all the Longhorn pods in the <code class="docutils literal notranslate"><span class="pre">longhorn-system</span></code> namespace. After a couple of
+minutes, all the pods should be in the <code class="docutils literal notranslate"><span class="pre">Running</span></code> state.</p>
+</div>
+</li>
+<li><p>Launch the Longhorn UI:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user:~/virtlml$ </span>kubectl<span class="w"> </span>port-forward<span class="w"> </span>-n<span class="w"> </span>longhorn-system<span class="w"> </span>svc/longhorn-frontend<span class="w"> </span><span class="m">8080</span>:80
+</pre></div>
+</div>
+<p>Open a web browser and navigate to <a class="reference external" href="http://localhost:8080">http://localhost:8080</a>. You should
+see the Longhorn UI:</p>
+<p><img alt="Longhorn UI" src="../_images/longhorn-ui.png" /></p>
+</li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="kubernetes.html" class="btn btn-neutral float-left" title="Deploy Kubernetes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kubeflow.html" class="btn btn-neutral float-right" title="Deploy Kubeflow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Dimitris Poulopoulos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
